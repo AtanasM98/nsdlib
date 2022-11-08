@@ -85,7 +85,7 @@ public class AlternativesRenderPart extends RenderPart
     {
         a.drawRect(x, y, w, headingHeight);
 
-        int triangleHeight = headingHeight / 2;
+        int triangleHeight = headingHeight;
         int caseWidth = w / pathLabels.size();
         int lastSepX = x + w - caseWidth;
 
@@ -94,7 +94,7 @@ public class AlternativesRenderPart extends RenderPart
 
         a.drawStringCentered(label, lastSepX, y);
 
-        y += triangleHeight;
+        y += triangleHeight / 2;
 
         // a^2 + b^2 = c^2
         int dx = lastSepX - x, dy = headingHeight;
@@ -103,15 +103,27 @@ public class AlternativesRenderPart extends RenderPart
         // tan of angle between x-axis and hypotenuse
         double linkAngleTan = Math.tan(Math.asin(triangleHeight / hypotLength));
 
+        int yOffsetForString = 5;
+
         for (int i = 0, n = pathLabels.size(); i < n; ++i) {
-            a.drawStringCentered(pathLabels.get(i), x + caseWidth / 2, y);
+            if(pathLabels.size() > 2) {
+                if(i <= pathLabels.size() / 2) {
+                    a.drawStringCentered(pathLabels.get(i), (int) (x + caseWidth / 3.5), y + yOffsetForString);
+                }
+                else {
+                    a.drawStringCentered(pathLabels.get(i), (int) (x + caseWidth / 1.5), y + yOffsetForString);
+                }
+            }
+            else {
+                a.drawStringCentered(pathLabels.get(i), (int) (x + caseWidth / 2), y + yOffsetForString);
+            }
             x += caseWidth;
 
             // for all but last case (since it doesn't need vertical separators)
             if (i < n - 1) {
                 // calc. amount of pixels that current point is above link end
                 int adjacent = (int) Math.abs(linkAngleTan * (x - lastSepX));
-                a.drawLine(x, y - adjacent, x, y + triangleHeight);
+                a.drawLine(x, y + adjacent, x, y);
             }
         }
 
