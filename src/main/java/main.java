@@ -5,7 +5,12 @@ import nsdlib.elements.alternatives.NSDCase;
 import nsdlib.elements.alternatives.NSDDecision;
 import nsdlib.elements.loops.NSDForever;
 import nsdlib.elements.loops.NSDTestFirstLoop;
+import nsdlib.rendering.RenderColor;
+import nsdlib.rendering.Size;
+import nsdlib.rendering.parts.AlternativesRenderPart;
+import nsdlib.rendering.parts.ContainerRenderPart;
 import nsdlib.rendering.parts.RenderPart;
+import nsdlib.rendering.parts.RootRenderPart;
 import nsdlib.rendering.renderer.awt.AwtRenderer;
 
 import javax.imageio.ImageIO;
@@ -19,28 +24,12 @@ public class main {
     public static void main(String[] args) {
         NSDRoot diagram = new NSDRoot("When start clicked");
 
-        NSDDecision dec = new NSDDecision("(pick random 1 to 10) = 1");
-        {
-            dec.getThen().addChild(new NSDInstruction("say \"You're lucky!\""));
-            dec.getElse().addChild(new NSDInstruction("say \"Not so lucky.\""));
-        }
-        diagram.addChild(dec);
+        NSDDecision nsdDec = new NSDDecision("index");
+        nsdDec.getThen().addChild(new NSDInstruction("test green"));
+        nsdDec.getThen().addChild(new NSDInstruction("test green two"));
+        nsdDec.getElse().addChild(new NSDInstruction("no green"));
 
-        NSDForever forever = new NSDForever(Arrays.asList(
-                new NSDInstruction("wait 1 secs")
-        ));
-        diagram.addChild(forever);
-
-        NSDTestFirstLoop firstLoop = new NSDTestFirstLoop("If bla", Arrays.asList(new NSDInstruction("Jump")));
-
-        diagram.addChild(firstLoop);
-
-        NSDCase nsdCase = new NSDCase("Case ble");
-        nsdCase.addChild(new NSDContainer<>("Jump", Arrays.asList(new NSDInstruction("Scream"), new NSDInstruction("Shout"))));
-        nsdCase.addChild(new NSDContainer<>("Yell", Arrays.asList(new NSDInstruction("Slap"), new NSDInstruction("Scratch"))));
-        nsdCase.addChild(new NSDContainer<>("Crouch", Arrays.asList(new NSDInstruction("Lie down"), new NSDInstruction("Get up"))));
-
-        diagram.addChild(nsdCase);
+        diagram.addChild(nsdDec);
 
         AwtRenderer renderer = new AwtRenderer();
 
@@ -50,11 +39,10 @@ public class main {
         // 2. layout
         part.layout(renderer.createContext());
         // optional: get the resulting size
-
         // Size s = part.getSize();
 
         // 3. render
-        BufferedImage img = renderer.render(part,50);
+        BufferedImage img = renderer.render(part,1);
 
         File outputFile = new File("image.png");
         try {

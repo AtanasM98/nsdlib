@@ -15,7 +15,7 @@ import nsdlib.rendering.renderer.RenderContext;
 public abstract class RenderPart
 {
     private final NSDElement source;
-    private RenderColor background;
+    protected RenderColor background;
 
     /**
      * Constructs a new part without a source element.
@@ -88,6 +88,13 @@ public abstract class RenderPart
      * @see #layout(RenderContext)
      */
     public abstract Size getSize();
+
+    /**
+     * @return void
+     *
+     * @see #layout(RenderContext)
+     */
+    public abstract void setSize(Size s);
 
     /**
      * Renders this part and all its child parts to the given adapter. Rendering

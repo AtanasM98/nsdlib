@@ -1,6 +1,7 @@
 package nsdlib.rendering.parts;
 
 import nsdlib.elements.NSDElement;
+import nsdlib.rendering.RenderColor;
 import nsdlib.rendering.Size;
 import nsdlib.rendering.renderer.RenderAdapter;
 import nsdlib.rendering.renderer.RenderContext;
@@ -38,6 +39,11 @@ public class BoxRenderPart extends RenderPart
     public Size getSize()
     {
         return size;
+    }
+
+    @Override
+    public void setSize(Size s) {
+        this.size = s;
     }
 
     @Override

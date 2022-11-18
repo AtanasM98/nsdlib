@@ -9,6 +9,10 @@ public class RenderColor
     public static final RenderColor BLACK = new RenderColor(0, 0, 0);
     /** The color white (255, 255, 255). */
     public static final RenderColor WHITE = new RenderColor(255, 255, 255);
+    /** The color red (255,0,0). */
+    public static final RenderColor RED = new RenderColor(255,0,0);
+    /** The color green (124,252,0). */
+    public static final RenderColor GREEN = new RenderColor(124,252,0);
 
     /** A fully transparent black (0, 0, 0, 0). */
     public static final RenderColor TRANSPARENT = new RenderColor(0, 0, 0, 0);
@@ -74,4 +78,7 @@ public class RenderColor
     {
         return a;
     }
+
+    @Override
+    public String toString() {return "r: " + r + " g: " + g + " b: " + b; }
 }

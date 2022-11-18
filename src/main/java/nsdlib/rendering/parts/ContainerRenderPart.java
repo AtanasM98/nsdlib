@@ -3,6 +3,7 @@ package nsdlib.rendering.parts;
 import java.util.*;
 
 import nsdlib.elements.NSDElement;
+import nsdlib.rendering.RenderColor;
 import nsdlib.rendering.Size;
 import nsdlib.rendering.renderer.RenderAdapter;
 import nsdlib.rendering.renderer.RenderContext;
@@ -29,6 +30,20 @@ public class ContainerRenderPart extends RenderPart
     {
         this.orientation = orientation;
         this.children = Collections.unmodifiableList(new ArrayList<>(children));
+    }
+
+    public List<RenderPart> getChildren() { return children; }
+
+    @Override
+    public void setBackground(RenderColor color) {
+        this.background = color;
+        for (RenderPart child:children) {
+            child.setBackground(color);
+        }
+    }
+
+    public void setBackgroundChild(RenderColor color, int index) {
+        children.get(index).setBackground(color);
     }
 
     @Override
@@ -73,6 +88,11 @@ public class ContainerRenderPart extends RenderPart
     public Size getSize()
     {
         return size;
+    }
+
+    @Override
+    public void setSize(Size s) {
+        size = s;
     }
 
     @Override

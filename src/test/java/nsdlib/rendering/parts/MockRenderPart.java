@@ -38,6 +38,11 @@ public class MockRenderPart extends RenderPart
     }
 
     @Override
+    public void setSize(Size s) {
+        this.sizeToUse = s;
+    }
+
+    @Override
     public void render(RenderAdapter<?> adapter, int x, int y, int w)
     {
         this.renderCalled = true;

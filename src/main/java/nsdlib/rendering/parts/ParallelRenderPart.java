@@ -3,6 +3,7 @@ package nsdlib.rendering.parts;
 import java.util.Collection;
 
 import nsdlib.elements.NSDElement;
+import nsdlib.rendering.RenderColor;
 import nsdlib.rendering.Size;
 import nsdlib.rendering.parts.ContainerRenderPart.Orientation;
 import nsdlib.rendering.renderer.RenderAdapter;
@@ -34,6 +35,14 @@ public class ParallelRenderPart extends RenderPart
     }
 
     @Override
+    public void setBackground(RenderColor color) {
+        this.background = color;
+        this.content.setBackground(color);
+    }
+
+    public ContainerRenderPart getContent() { return content; }
+
+    @Override
     public RenderPart findForSource(NSDElement source)
     {
         return source == getSource() ? this : content.findForSource(source);
@@ -59,6 +68,11 @@ public class ParallelRenderPart extends RenderPart
     public Size getSize()
     {
         return size;
+    }
+
+    @Override
+    public void setSize(Size s) {
+        size = s;
     }
 
     @Override

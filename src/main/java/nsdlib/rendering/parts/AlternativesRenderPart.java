@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import nsdlib.elements.NSDElement;
+import nsdlib.rendering.RenderColor;
 import nsdlib.rendering.Size;
 import nsdlib.rendering.parts.ContainerRenderPart.Orientation;
 import nsdlib.rendering.renderer.RenderAdapter;
@@ -45,6 +46,18 @@ public class AlternativesRenderPart extends RenderPart
     }
 
     @Override
+    public void setBackground(RenderColor color) {
+        this.background = color;
+        this.content.setBackground(RenderColor.WHITE);
+    }
+
+    public ContainerRenderPart getContent() { return content; }
+
+    public void setBackgroundChild(RenderColor color, int index) {
+        this.content.setBackgroundChild(color, index);
+    }
+
+    @Override
     public RenderPart findForSource(NSDElement source)
     {
         return source == getSource() ? this : content.findForSource(source);
@@ -73,6 +86,11 @@ public class AlternativesRenderPart extends RenderPart
     }
 
     @Override
+    public void setSize(Size s) {
+        size = s;
+    }
+
+    @Override
     public void render(RenderAdapter<?> adapter, int x, int y, int w)
     {
         adapter.fillRect(x, y, w, headingHeight, getBackground());
@@ -94,7 +112,7 @@ public class AlternativesRenderPart extends RenderPart
 
         a.drawStringCentered(label, lastSepX, y);
 
-        y += triangleHeight / 2;
+        y += triangleHeight;
 
         // a^2 + b^2 = c^2
         int dx = lastSepX - x, dy = headingHeight;
@@ -108,14 +126,14 @@ public class AlternativesRenderPart extends RenderPart
         for (int i = 0, n = pathLabels.size(); i < n; ++i) {
             if(pathLabels.size() > 2) {
                 if(i <= pathLabels.size() / 2) {
-                    a.drawStringCentered(pathLabels.get(i), (int) (x + caseWidth / 3.5), y + yOffsetForString);
+                    a.drawStringCentered(pathLabels.get(i), (int) (x + caseWidth / 3.5), y + yOffsetForString - (triangleHeight / 2));
                 }
                 else {
-                    a.drawStringCentered(pathLabels.get(i), (int) (x + caseWidth / 1.5), y + yOffsetForString);
+                    a.drawStringCentered(pathLabels.get(i), (int) (x + caseWidth / 1.5), y + yOffsetForString - (triangleHeight / 2));
                 }
             }
             else {
-                a.drawStringCentered(pathLabels.get(i), (int) (x + caseWidth / 2), y + yOffsetForString);
+                a.drawStringCentered(pathLabels.get(i), (int) (x + caseWidth / 2), y + yOffsetForString - (triangleHeight / 2));
             }
             x += caseWidth;
 
@@ -123,7 +141,7 @@ public class AlternativesRenderPart extends RenderPart
             if (i < n - 1) {
                 // calc. amount of pixels that current point is above link end
                 int adjacent = (int) Math.abs(linkAngleTan * (x - lastSepX));
-                a.drawLine(x, y + adjacent, x, y);
+                a.drawLine(x, y, x, y - adjacent);
             }
         }
 

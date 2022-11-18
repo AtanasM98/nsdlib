@@ -3,6 +3,7 @@ package nsdlib.rendering.parts;
 import java.util.Collection;
 
 import nsdlib.elements.NSDElement;
+import nsdlib.rendering.RenderColor;
 import nsdlib.rendering.Size;
 import nsdlib.rendering.parts.ContainerRenderPart.Orientation;
 import nsdlib.rendering.renderer.RenderAdapter;
@@ -46,6 +47,14 @@ public class BraceRenderPart extends RenderPart
         this.bottom = bottom;
     }
 
+    public ContainerRenderPart getContent() { return content; }
+
+    @Override
+    public void setBackground(RenderColor color) {
+        this.background = color;
+        this.content.setBackground(RenderColor.WHITE);
+    }
+
     @Override
     public RenderPart findForSource(NSDElement source)
     {
@@ -87,6 +96,11 @@ public class BraceRenderPart extends RenderPart
     public Size getSize()
     {
         return size;
+    }
+
+    @Override
+    public void setSize(Size s) {
+        size = s;
     }
 
     @Override
