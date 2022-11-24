@@ -16,6 +16,9 @@ public abstract class RenderPart
 {
     private final NSDElement source;
     protected RenderColor background;
+    protected int positionX;
+    protected int positionY;
+    protected int width;
 
     /**
      * Constructs a new part without a source element.
@@ -24,6 +27,10 @@ public abstract class RenderPart
     {
         this(null);
     }
+
+    public int getPositionX() { return positionX; }
+    public int getPositionY() { return positionY; }
+    public int getWidth() { return width; }
 
     /**
      * Constructs a new part with the given element as its source.

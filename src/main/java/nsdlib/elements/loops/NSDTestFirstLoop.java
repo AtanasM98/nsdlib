@@ -34,6 +34,9 @@ public class NSDTestFirstLoop extends NSDContainer<NSDElement>
     @Override
     public RenderPart toRenderPart()
     {
-        return new BraceRenderPart(this, getChildRenderParts(), true, getLabel(), false, null);
+        if(renderPart == null) {
+            renderPart = new BraceRenderPart(this, getChildRenderParts(), true, getLabel(), false, null);
+        }
+        return renderPart;
     }
 }

@@ -101,6 +101,9 @@ public class ContainerRenderPart extends RenderPart
         if (children.isEmpty()) {
             return;
         }
+        positionX = x;
+        positionY = y;
+        width = w;
 
         adapter.fillRect(x, y, w, size.height, getBackground());
 

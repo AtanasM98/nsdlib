@@ -13,7 +13,6 @@ import nsdlib.rendering.renderer.RenderContext;
 public class BoxRenderPart extends RenderPart
 {
     private final String label;
-
     private Size size;
 
     /**
@@ -49,6 +48,10 @@ public class BoxRenderPart extends RenderPart
     @Override
     public void render(RenderAdapter<?> adapter, int x, int y, int w)
     {
+        positionX = x;
+        positionY = y;
+        width = w;
+
         adapter.fillRect(x, y, w, size.height, getBackground());
 
         adapter.drawRect(x, y, w, size.height);

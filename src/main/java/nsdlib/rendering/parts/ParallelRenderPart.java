@@ -78,6 +78,10 @@ public class ParallelRenderPart extends RenderPart
     @Override
     public void render(RenderAdapter<?> adapter, int x, int y, int w)
     {
+        positionX = x;
+        positionY = y;
+        width = w;
+
         adapter.fillRect(x, y, w, decoHeight, getBackground());
 
         // draw top

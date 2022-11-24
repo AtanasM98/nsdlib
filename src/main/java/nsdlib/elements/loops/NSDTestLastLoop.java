@@ -5,6 +5,7 @@ import java.util.Collection;
 import nsdlib.elements.NSDContainer;
 import nsdlib.elements.NSDElement;
 import nsdlib.rendering.parts.BraceRenderPart;
+import nsdlib.rendering.parts.ContainerRenderPart;
 import nsdlib.rendering.parts.RenderPart;
 
 
@@ -35,6 +36,9 @@ public class NSDTestLastLoop extends NSDContainer<NSDElement>
     @Override
     public RenderPart toRenderPart()
     {
-        return new BraceRenderPart(this, getChildRenderParts(), false, null, true, getLabel());
+        if(renderPart == null) {
+            renderPart = new BraceRenderPart(this, getChildRenderParts(), false, null, true, getLabel());
+        }
+        return renderPart;
     }
 }

@@ -32,6 +32,9 @@ public class NSDForever extends NSDContainer<NSDElement>
     @Override
     public RenderPart toRenderPart()
     {
-        return new BraceRenderPart(this, getChildRenderParts(), true, null, true, null);
+        if(renderPart == null) {
+            renderPart = new BraceRenderPart(this, getChildRenderParts(), true, null, true, null);
+        }
+        return renderPart;
     }
 }

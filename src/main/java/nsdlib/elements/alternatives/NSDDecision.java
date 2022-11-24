@@ -7,6 +7,7 @@ import java.util.List;
 import nsdlib.elements.NSDContainer;
 import nsdlib.elements.NSDElement;
 import nsdlib.rendering.parts.AlternativesRenderPart;
+import nsdlib.rendering.parts.BraceRenderPart;
 import nsdlib.rendering.parts.RenderPart;
 
 
@@ -67,9 +68,12 @@ public class NSDDecision extends NSDElement
     @Override
     public RenderPart toRenderPart()
     {
-        List<String> labels = Arrays.asList(then.getLabel(), otherwise.getLabel());
-        List<RenderPart> contents = Arrays.asList(then.toRenderPart(), otherwise.toRenderPart());
+        if(renderPart == null) {
+            List<String> labels = Arrays.asList(then.getLabel(), otherwise.getLabel());
+            List<RenderPart> contents = Arrays.asList(then.toRenderPart(), otherwise.toRenderPart());
 
-        return new AlternativesRenderPart(this, getLabel(), labels, contents);
+            renderPart = new AlternativesRenderPart(this, getLabel(), labels, contents);
+        }
+        return renderPart;
     }
 }

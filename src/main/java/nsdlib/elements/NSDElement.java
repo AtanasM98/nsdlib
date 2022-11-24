@@ -8,6 +8,7 @@ import nsdlib.rendering.parts.RenderPart;
  */
 public abstract class NSDElement
 {
+    protected RenderPart renderPart;
     private String label;
 
     /**

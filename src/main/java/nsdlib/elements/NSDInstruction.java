@@ -20,6 +20,9 @@ public class NSDInstruction extends NSDElement
     @Override
     public RenderPart toRenderPart()
     {
-        return new BoxRenderPart(this, getLabel());
+        if(renderPart == null) {
+            renderPart = new BoxRenderPart(this, getLabel());
+        }
+        return renderPart;
     }
 }

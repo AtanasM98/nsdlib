@@ -22,14 +22,36 @@ import java.util.Arrays;
 
 public class main {
     public static void main(String[] args) {
-        NSDRoot diagram = new NSDRoot("When start clicked");
+        NSDRoot diagram = new NSDRoot("CountToTen");
 
-        NSDDecision nsdDec = new NSDDecision("index");
-        nsdDec.getThen().addChild(new NSDInstruction("test green"));
-        nsdDec.getThen().addChild(new NSDInstruction("test green two"));
-        nsdDec.getElse().addChild(new NSDInstruction("no green"));
+        diagram.addChild(new NSDInstruction("count = 10"));
+        diagram.addChild(new NSDInstruction("min(10, count)"));
+
+        NSDDecision nsdDec = new NSDDecision("count < 10");
+        nsdDec.getThen().addChild(new NSDInstruction("count + 10"));
+        NSDDecision nsdDecNested = new NSDDecision("count > 10");
+        nsdDecNested.getThen().addChild(new NSDInstruction("count + 1"));
+        nsdDecNested.getElse().addChild(new NSDInstruction("count"));
+        nsdDec.getElse().addChild(nsdDecNested);
 
         diagram.addChild(nsdDec);
+
+        diagram.addChild(new NSDInstruction("\"\""));
+
+        NSDCase altCase = new NSDCase("alt");
+        NSDContainer cont1 = new NSDContainer("count > 10");
+        cont1.addChild(new NSDInstruction("count + 1"));
+        altCase.addChild(cont1);
+        NSDContainer cont2 = new NSDContainer("count < 10");
+        cont2.addChild(new NSDInstruction("count - 1"));
+        altCase.addChild(cont2);
+        NSDContainer cont3 = new NSDContainer("count == 10");
+        cont3.addChild(new NSDInstruction("count"));
+        altCase.addChild(cont3);
+        NSDContainer cont4 = new NSDContainer("count == 5");
+        cont4.addChild(new NSDInstruction("count"));
+        altCase.addChild(cont4);
+        diagram.addChild(altCase);
 
         AwtRenderer renderer = new AwtRenderer();
 

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import nsdlib.elements.NSDContainer;
 import nsdlib.elements.NSDElement;
 import nsdlib.rendering.parts.AlternativesRenderPart;
+import nsdlib.rendering.parts.BraceRenderPart;
 import nsdlib.rendering.parts.RenderPart;
 
 
@@ -36,7 +37,10 @@ public class NSDCase extends NSDContainer<NSDContainer<NSDElement>>
     @Override
     public RenderPart toRenderPart()
     {
-        return new AlternativesRenderPart(this, getLabel(), getChildLabels(), getChildRenderParts());
+        if(renderPart == null) {
+            renderPart = new AlternativesRenderPart(this, getLabel(), getChildLabels(), getChildRenderParts());
+        }
+        return renderPart;
     }
 
     private List<String> getChildLabels()

@@ -2,6 +2,7 @@ package nsdlib.elements;
 
 import java.util.Collection;
 
+import nsdlib.rendering.parts.BoxRenderPart;
 import nsdlib.rendering.parts.RenderPart;
 import nsdlib.rendering.parts.RootRenderPart;
 
@@ -31,6 +32,9 @@ public class NSDRoot extends NSDContainer<NSDElement>
     @Override
     public RenderPart toRenderPart()
     {
-        return new RootRenderPart(this, getLabel(), getChildRenderParts());
+        if(renderPart == null) {
+            renderPart = new RootRenderPart(this, getLabel(), getChildRenderParts());
+        }
+        return renderPart;
     }
 }

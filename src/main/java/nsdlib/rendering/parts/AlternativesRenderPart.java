@@ -23,6 +23,8 @@ public class AlternativesRenderPart extends RenderPart
     private final List<String> pathLabels;
     private final ContainerRenderPart content;
 
+    private int caseWidth;
+
     private Size size;
     private int headingHeight;
 
@@ -44,6 +46,15 @@ public class AlternativesRenderPart extends RenderPart
 
         this.content = new ContainerRenderPart(Orientation.HORIZONTAL, pathContents);
     }
+
+    public int getHeadingHeight() {
+        if(this.content.getChildren().size() > 2){
+            return headingHeight / 2;
+        } else {
+            return headingHeight;
+        }
+    }
+    public int getCaseWidth() { return caseWidth; }
 
     @Override
     public void setBackground(RenderColor color) {
@@ -73,7 +84,7 @@ public class AlternativesRenderPart extends RenderPart
 
         headingHeight = box.height * 2;
 
-        int width = Math.max(box.width * pathLabels.size(), contentSize.width);
+        width = Math.max(box.width * pathLabels.size(), contentSize.width);
         int height = headingHeight + contentSize.height;
 
         size = new Size(width, height);
@@ -93,8 +104,11 @@ public class AlternativesRenderPart extends RenderPart
     @Override
     public void render(RenderAdapter<?> adapter, int x, int y, int w)
     {
-        adapter.fillRect(x, y, w, headingHeight, getBackground());
+        positionX = x;
+        positionY = y;
+        width = w;
 
+        adapter.fillRect(x, y, w, headingHeight, getBackground());
         y += drawHeading(adapter, x, y, w);
         content.render(adapter, x, y, w);
     }
@@ -103,16 +117,25 @@ public class AlternativesRenderPart extends RenderPart
     {
         a.drawRect(x, y, w, headingHeight);
 
-        int triangleHeight = headingHeight;
-        int caseWidth = w / pathLabels.size();
+        int triangleHeight;
+
+        if(this.content.getChildren().size() > 2)
+            triangleHeight = headingHeight / 2;
+        else
+            triangleHeight = headingHeight;
+
+        caseWidth = w / pathLabels.size();
         int lastSepX = x + w - caseWidth;
 
-        a.drawLine(x, y, lastSepX, y + triangleHeight);
         a.drawLine(lastSepX, y + triangleHeight, x + w, y);
+        a.drawLine(x, y, lastSepX, y + triangleHeight);
 
         a.drawStringCentered(label, lastSepX, y);
 
-        y += triangleHeight;
+        if(this.content.getChildren().size() > 2)
+            y += triangleHeight;
+        else
+            y += triangleHeight / 2;
 
         // a^2 + b^2 = c^2
         int dx = lastSepX - x, dy = headingHeight;
@@ -121,27 +144,15 @@ public class AlternativesRenderPart extends RenderPart
         // tan of angle between x-axis and hypotenuse
         double linkAngleTan = Math.tan(Math.asin(triangleHeight / hypotLength));
 
-        int yOffsetForString = 5;
-
         for (int i = 0, n = pathLabels.size(); i < n; ++i) {
-            if(pathLabels.size() > 2) {
-                if(i <= pathLabels.size() / 2) {
-                    a.drawStringCentered(pathLabels.get(i), (int) (x + caseWidth / 3.5), y + yOffsetForString - (triangleHeight / 2));
-                }
-                else {
-                    a.drawStringCentered(pathLabels.get(i), (int) (x + caseWidth / 1.5), y + yOffsetForString - (triangleHeight / 2));
-                }
-            }
-            else {
-                a.drawStringCentered(pathLabels.get(i), (int) (x + caseWidth / 2), y + yOffsetForString - (triangleHeight / 2));
-            }
+            a.drawStringCentered(pathLabels.get(i), x + caseWidth / 2, y);
             x += caseWidth;
 
             // for all but last case (since it doesn't need vertical separators)
-            if (i < n - 1) {
+            if (i < n - 1 && pathLabels.size() > 2) {
                 // calc. amount of pixels that current point is above link end
                 int adjacent = (int) Math.abs(linkAngleTan * (x - lastSepX));
-                a.drawLine(x, y, x, y - adjacent);
+                a.drawLine(x, y - adjacent, x, y + triangleHeight);
             }
         }
 

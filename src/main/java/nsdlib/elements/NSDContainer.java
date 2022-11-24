@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import nsdlib.rendering.parts.ContainerRenderPart;
 import nsdlib.rendering.parts.ContainerRenderPart.Orientation;
 import nsdlib.rendering.parts.RenderPart;
+import nsdlib.rendering.parts.RootRenderPart;
 
 
 /**
@@ -143,7 +144,10 @@ public class NSDContainer<T extends NSDElement> extends NSDElement implements It
     @Override
     public RenderPart toRenderPart()
     {
-        return new ContainerRenderPart(Orientation.VERTICAL, getChildRenderParts());
+        if(renderPart == null) {
+            renderPart = new ContainerRenderPart(Orientation.VERTICAL, getChildRenderParts());
+        }
+        return renderPart;
     }
 
     /**

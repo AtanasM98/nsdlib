@@ -109,6 +109,9 @@ public class BraceRenderPart extends RenderPart
         if (hasTop) {
             y += drawTop(adapter, x, y, w);
         }
+        positionX = x;
+        positionY = y;
+        width = w;
 
         drawLeft(adapter, x, y);
 
