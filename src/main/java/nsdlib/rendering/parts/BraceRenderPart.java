@@ -106,17 +106,19 @@ public class BraceRenderPart extends RenderPart
     @Override
     public void render(RenderAdapter<?> adapter, int x, int y, int w)
     {
+        positionY = y;
+        positionX = x;
+        width = w;
+
         if (hasTop) {
             y += drawTop(adapter, x, y, w);
         }
-        positionX = x;
-        positionY = y;
-        width = w;
 
         drawLeft(adapter, x, y);
 
         content.render(adapter, x + leftWidth, y, w - leftWidth);
         y += contentHeight;
+
 
         if (hasBottom) {
             drawBottom(adapter, x, y, w);
