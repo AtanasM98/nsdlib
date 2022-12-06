@@ -17,7 +17,7 @@ import nsdlib.rendering.renderer.RenderContext;
  * Render part for Case and Decision elements, drawing the header and the child
  * containers.
  */
-public class AlternativesRenderPart extends RenderPart
+public class AlternativesRenderPart extends RenderPart implements IContainerHolderRenderPart
 {
     private final String label;
     private final List<String> pathLabels;
@@ -62,6 +62,7 @@ public class AlternativesRenderPart extends RenderPart
         this.content.setBackground(RenderColor.WHITE);
     }
 
+    @Override
     public ContainerRenderPart getContent() { return content; }
 
     public void setBackgroundChild(RenderColor color, int index) {

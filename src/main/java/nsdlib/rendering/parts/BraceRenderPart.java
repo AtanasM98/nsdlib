@@ -13,7 +13,7 @@ import nsdlib.rendering.renderer.RenderContext;
 /**
  * Render part for brace elements, as used by loops.
  */
-public class BraceRenderPart extends RenderPart
+public class BraceRenderPart extends RenderPart implements IContainerHolderRenderPart
 {
     private final ContainerRenderPart content;
     private final boolean hasTop, hasBottom;
@@ -47,6 +47,7 @@ public class BraceRenderPart extends RenderPart
         this.bottom = bottom;
     }
 
+    @Override
     public ContainerRenderPart getContent() { return content; }
 
     @Override

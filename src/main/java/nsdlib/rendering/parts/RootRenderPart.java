@@ -14,7 +14,7 @@ import nsdlib.rendering.renderer.RenderContext;
  * Render part for the root element, drawing a labeled box around all of its
  * children.
  */
-public class RootRenderPart extends RenderPart
+public class RootRenderPart extends RenderPart implements IContainerHolderRenderPart
 {
     private final String label;
     private final ContainerRenderPart content;
@@ -37,6 +37,7 @@ public class RootRenderPart extends RenderPart
         this.content = new ContainerRenderPart(Orientation.VERTICAL, children);
     }
 
+    @Override
     public ContainerRenderPart getContent() { return content; }
 
     @Override

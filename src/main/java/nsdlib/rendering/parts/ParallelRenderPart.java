@@ -14,7 +14,7 @@ import nsdlib.rendering.renderer.RenderContext;
  * Render part for parallel processing elements, drawing the top and bottom
  * boxes with the children in between.
  */
-public class ParallelRenderPart extends RenderPart
+public class ParallelRenderPart extends RenderPart implements IContainerHolderRenderPart
 {
     private final ContainerRenderPart content;
 
@@ -40,6 +40,7 @@ public class ParallelRenderPart extends RenderPart
         this.content.setBackground(color);
     }
 
+    @Override
     public ContainerRenderPart getContent() { return content; }
 
     @Override
