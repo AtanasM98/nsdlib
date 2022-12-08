@@ -57,6 +57,18 @@ public class AlternativesRenderPart extends RenderPart implements IContainerHold
     public int getCaseWidth() { return caseWidth; }
 
     @Override
+    public boolean equals(Object o) {
+        if(!super.equals(o)) return false;
+        AlternativesRenderPart alt = (AlternativesRenderPart) o;
+        if(!this.content.equals(alt.content) ||
+            !this.size.equals(alt.size) ||
+            !this.pathLabels.equals(alt.pathLabels) ||
+            this.headingHeight != alt.headingHeight ||
+            this.caseWidth != alt.caseWidth) return false;
+        return true;
+    }
+
+    @Override
     public void setBackground(RenderColor color) {
         this.background = color;
         this.content.setBackground(RenderColor.WHITE);

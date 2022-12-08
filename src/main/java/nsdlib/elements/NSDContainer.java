@@ -1,16 +1,12 @@
 package nsdlib.elements;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import nsdlib.rendering.parts.ContainerRenderPart;
 import nsdlib.rendering.parts.ContainerRenderPart.Orientation;
 import nsdlib.rendering.parts.RenderPart;
-import nsdlib.rendering.parts.RootRenderPart;
 
 
 /**
@@ -29,6 +25,10 @@ public class NSDContainer<T extends NSDElement> extends NSDElement implements It
     public NSDContainer(String label)
     {
         this(label, null);
+    }
+
+    public List<T> getChildren() {
+        return Collections.unmodifiableList(children);
     }
 
     /**
@@ -148,6 +148,18 @@ public class NSDContainer<T extends NSDElement> extends NSDElement implements It
             renderPart = new ContainerRenderPart(Orientation.VERTICAL, getChildRenderParts());
         }
         return renderPart;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(!super.equals(o))
+            return false;
+        for (int i = 0; i < this.countChildren(); i++){
+            if(!this.getChild(i).equals(((NSDContainer<?>) o).getChild(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

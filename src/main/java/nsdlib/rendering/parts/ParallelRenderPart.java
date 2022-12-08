@@ -41,6 +41,16 @@ public class ParallelRenderPart extends RenderPart implements IContainerHolderRe
     }
 
     @Override
+    public boolean equals(Object o) {
+        if(!super.equals(o)) return false;
+        ParallelRenderPart parallel = (ParallelRenderPart) o;
+        if(!content.equals(parallel.getContent())) return false;
+        if(this.decoHeight != parallel.decoHeight ||
+                !this.size.equals(parallel.size)) return false;
+        return true;
+    }
+
+    @Override
     public ContainerRenderPart getContent() { return content; }
 
     @Override

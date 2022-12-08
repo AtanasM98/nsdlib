@@ -27,10 +27,21 @@ public abstract class RenderPart
     {
         this(null);
     }
-
     public int getPositionX() { return positionX; }
     public int getPositionY() { return positionY; }
     public int getWidth() { return width; }
+
+    @Override
+    public boolean equals(Object o) {
+        if(this.getClass() != o.getClass() || o == null) return false;
+        RenderPart renderPart = (RenderPart) o;
+        if(!this.source.equals(renderPart.source)) return false;
+        if(this.background != renderPart.background ||
+                this.width != renderPart.width ||
+                this.positionX != renderPart.positionX ||
+                this.positionY != renderPart.positionY) return false;
+        return true;
+    }
 
     /**
      * Constructs a new part with the given element as its source.

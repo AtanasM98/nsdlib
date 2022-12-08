@@ -42,6 +42,18 @@ public class ContainerRenderPart extends RenderPart
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if(!super.equals(o)) return false;
+        ContainerRenderPart cont = (ContainerRenderPart) o;
+        for (int i = 0; i < children.size(); i++) {
+            if(!children.get(i).equals(cont.children.get(i))) return false;
+        }
+        if(this.orientation != cont.orientation ||
+            !this.size.equals(cont.size)) return false;
+        return true;
+    }
+
     public void setBackgroundChild(RenderColor color, int index) {
         children.get(index).setBackground(color);
     }

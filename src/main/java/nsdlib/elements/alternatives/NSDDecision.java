@@ -76,4 +76,16 @@ public class NSDDecision extends NSDElement
         }
         return renderPart;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if(!super.equals(o))
+            return false;
+        NSDDecision dec = (NSDDecision) o;
+        if(!this.then.equals(dec.getThen()))
+            return false;
+        if(!this.otherwise.equals(dec.getElse()))
+            return false;
+        return true;
+    }
 }

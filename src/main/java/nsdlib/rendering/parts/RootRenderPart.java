@@ -38,6 +38,17 @@ public class RootRenderPart extends RenderPart implements IContainerHolderRender
     }
 
     @Override
+    public boolean equals(Object o) {
+        if(!super.equals(o)) return false;
+        RootRenderPart root = (RootRenderPart) o;
+        if(!content.equals(root.getContent())) return false;
+        if(this.boxHeight != root.boxHeight ||
+                !this.size.equals(root.size) ||
+                this.padHorizontal != root.padHorizontal) return false;
+        return true;
+    }
+
+    @Override
     public ContainerRenderPart getContent() { return content; }
 
     @Override

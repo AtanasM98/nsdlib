@@ -28,6 +28,15 @@ public class BoxRenderPart extends RenderPart
         this.label = s;
     }
 
+        @Override
+        public boolean equals(Object o) {
+            if(!super.equals(o)) return false;
+            BoxRenderPart box = (BoxRenderPart) o;
+            if(this.label.equals(box.label) ||
+                    !this.size.equals(box.size)) return false;
+            return true;
+    }
+
     @Override
     public void layout(RenderContext ctx)
     {

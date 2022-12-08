@@ -51,6 +51,23 @@ public class BraceRenderPart extends RenderPart implements IContainerHolderRende
     public ContainerRenderPart getContent() { return content; }
 
     @Override
+    public boolean equals(Object o) {
+        if(!super.equals(o)) return false;
+        BraceRenderPart brace = (BraceRenderPart) o;
+        if(!this.content.equals(brace.content) ||
+                !this.size.equals(brace.size) ||
+                this.hasTop != brace.hasTop ||
+                this.hasBottom != brace.hasBottom ||
+                !this.top.equals(brace.top) ||
+                !this.bottom.equals(brace.bottom) ||
+                this.leftWidth != brace.leftWidth ||
+                this.contentHeight != brace.contentHeight ||
+                this.topHeight != brace.topHeight ||
+                this.bottomHeight != brace.bottomHeight) return false;
+        return true;
+    }
+
+    @Override
     public void setBackground(RenderColor color) {
         this.background = color;
         this.content.setBackground(RenderColor.WHITE);

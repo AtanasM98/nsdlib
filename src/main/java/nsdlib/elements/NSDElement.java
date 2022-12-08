@@ -1,5 +1,6 @@
 package nsdlib.elements;
 
+import nsdlib.elements.alternatives.NSDDecision;
 import nsdlib.rendering.parts.RenderPart;
 
 
@@ -44,4 +45,13 @@ public abstract class NSDElement
      * @return A new render part for this element.
      */
     public abstract RenderPart toRenderPart();
+
+    @Override
+    public boolean equals(Object o) {
+        if(this.getClass() != o.getClass() || o == null) return false;
+        NSDElement element = (NSDElement) o;
+        if(!this.getLabel().equals(element.getLabel()) ||
+                !this.renderPart.equals(element.renderPart)) return false;
+        return true;
+    }
 }
