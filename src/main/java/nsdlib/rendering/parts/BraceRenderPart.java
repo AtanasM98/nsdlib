@@ -1,6 +1,7 @@
 package nsdlib.rendering.parts;
 
 import java.util.Collection;
+import java.util.Objects;
 
 import nsdlib.elements.NSDElement;
 import nsdlib.rendering.RenderColor;
@@ -18,7 +19,6 @@ public class BraceRenderPart extends RenderPart implements IContainerHolderRende
     private final ContainerRenderPart content;
     private final boolean hasTop, hasBottom;
     private final String top, bottom;
-
     private Size size;
     private int leftWidth, contentHeight;
     private int topHeight, bottomHeight;
@@ -48,23 +48,22 @@ public class BraceRenderPart extends RenderPart implements IContainerHolderRende
     }
 
     @Override
-    public ContainerRenderPart getContent() { return content; }
+    public ContainerRenderPart getContent() {
+        return content;
+    }
 
     @Override
     public boolean equals(Object o) {
-        if(!super.equals(o)) return false;
-        BraceRenderPart brace = (BraceRenderPart) o;
-        if(!this.content.equals(brace.content) ||
-                !this.size.equals(brace.size) ||
-                this.hasTop != brace.hasTop ||
-                this.hasBottom != brace.hasBottom ||
-                !this.top.equals(brace.top) ||
-                !this.bottom.equals(brace.bottom) ||
-                this.leftWidth != brace.leftWidth ||
-                this.contentHeight != brace.contentHeight ||
-                this.topHeight != brace.topHeight ||
-                this.bottomHeight != brace.bottomHeight) return false;
-        return true;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        BraceRenderPart that = (BraceRenderPart) o;
+        return hasTop == that.hasTop && hasBottom == that.hasBottom && leftWidth == that.leftWidth && contentHeight == that.contentHeight && topHeight == that.topHeight && bottomHeight == that.bottomHeight && Objects.equals(content, that.content) && Objects.equals(top, that.top) && Objects.equals(bottom, that.bottom) && Objects.equals(size, that.size);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), content, hasTop, hasBottom, top, bottom, size, leftWidth, contentHeight, topHeight, bottomHeight);
     }
 
     @Override
@@ -136,7 +135,6 @@ public class BraceRenderPart extends RenderPart implements IContainerHolderRende
 
         content.render(adapter, x + leftWidth, y, w - leftWidth);
         y += contentHeight;
-
 
         if (hasBottom) {
             drawBottom(adapter, x, y, w);

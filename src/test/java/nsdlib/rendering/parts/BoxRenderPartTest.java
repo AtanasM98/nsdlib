@@ -15,11 +15,11 @@ public class BoxRenderPartTest
     @Test
     public void findsForSource()
     {
-        NSDElement sourceObj = new NSDInstruction("sourceObj");
+        NSDElement sourceObj = new NSDInstruction(null, "sourceObj");
         BoxRenderPart obj = new BoxRenderPart(sourceObj, "box");
 
         assertSame(obj, obj.findForSource(sourceObj));
-        assertNull(obj.findForSource(new NSDInstruction("other")));
+        assertNull(obj.findForSource(new NSDInstruction(null, "other")));
     }
 
     @Test

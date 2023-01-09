@@ -3,6 +3,7 @@ package nsdlib.elements.alternatives;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import nsdlib.elements.NSDContainer;
 import nsdlib.elements.NSDElement;
@@ -22,18 +23,18 @@ public class NSDDecision extends NSDElement
     /**
      * @param label The element's label.
      */
-    public NSDDecision(String label)
+    public NSDDecision(String nodeId, String label)
     {
-        this(label, null, null);
+        this(nodeId, label, null, null);
     }
 
     /**
      * @param label The element's label.
      * @param then The child elements for the "then" branch.
      */
-    public NSDDecision(String label, Collection<? extends NSDElement> then)
+    public NSDDecision(String nodeId, String label, Collection<? extends NSDElement> then)
     {
-        this(label, then, null);
+        this(nodeId, label, then, null);
     }
 
     /**
@@ -41,9 +42,10 @@ public class NSDDecision extends NSDElement
      * @param then The child elements for the "then" branch.
      * @param otherwise The child elements for the "else" branch.
      */
-    public NSDDecision(String label, Collection<? extends NSDElement> then, Collection<? extends NSDElement> otherwise)
+    public NSDDecision(String nodeId, String label,
+                       Collection<? extends NSDElement> then, Collection<? extends NSDElement> otherwise)
     {
-        super(label);
+        super(nodeId, label);
 
         this.then = new NSDContainer<>("T", then);
         this.otherwise = new NSDContainer<>("F", otherwise);
@@ -79,13 +81,15 @@ public class NSDDecision extends NSDElement
 
     @Override
     public boolean equals(Object o) {
-        if(!super.equals(o))
-            return false;
-        NSDDecision dec = (NSDDecision) o;
-        if(!this.then.equals(dec.getThen()))
-            return false;
-        if(!this.otherwise.equals(dec.getElse()))
-            return false;
-        return true;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        NSDDecision that = (NSDDecision) o;
+        return then.equals(that.then) && otherwise.equals(that.otherwise);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), then, otherwise);
     }
 }

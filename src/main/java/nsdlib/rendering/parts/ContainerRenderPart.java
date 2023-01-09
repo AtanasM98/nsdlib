@@ -44,14 +44,18 @@ public class ContainerRenderPart extends RenderPart
 
     @Override
     public boolean equals(Object o) {
-        if(!super.equals(o)) return false;
-        ContainerRenderPart cont = (ContainerRenderPart) o;
-        for (int i = 0; i < children.size(); i++) {
-            if(!children.get(i).equals(cont.children.get(i))) return false;
-        }
-        if(this.orientation != cont.orientation ||
-            !this.size.equals(cont.size)) return false;
-        return true;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ContainerRenderPart that = (ContainerRenderPart) o;
+        if(children != null && size != null && that.children != null && that.size != null)
+            return orientation == that.orientation && children.equals(that.children) && size.equals(that.size);
+        else
+            return orientation == that.orientation && children == that.children && size == that.size;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(orientation, children, size);
     }
 
     public void setBackgroundChild(RenderColor color, int index) {

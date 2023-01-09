@@ -13,23 +13,23 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class NSDParallelTest
 {
-    private static final NSDContainer<NSDElement> child0 = new NSDContainer<>("c0");
-    private static final NSDContainer<NSDElement> child1 = new NSDContainer<>("c1");
+    private static final NSDContainer<NSDElement> child0 = new NSDContainer<>(null, "c0");
+    private static final NSDContainer<NSDElement> child1 = new NSDContainer<>(null, "c1");
 
     @Test
     public void addsChildrenGivenToConstructor()
     {
-        NSDParallel obj = new NSDParallel();
+        NSDParallel obj = new NSDParallel(null);
         assertEquals(0, obj.countChildren());
 
-        obj = new NSDParallel(Arrays.asList(child0, child1));
+        obj = new NSDParallel(null, Arrays.asList(child0, child1));
         assertEquals(2, obj.countChildren());
     }
 
     @Test
     public void convertsToParallelRenderPart()
     {
-        NSDParallel obj = new NSDParallel(Arrays.asList(child0, child1));
+        NSDParallel obj = new NSDParallel(null, Arrays.asList(child0, child1));
         RenderPart part = obj.toRenderPart();
 
         assertTrue(part instanceof ParallelRenderPart);

@@ -13,20 +13,21 @@ import nsdlib.rendering.parts.RootRenderPart;
 public class NSDRoot extends NSDContainer<NSDElement>
 {
     /**
-     * @param label The element's label.
+     * @param label The element's label.\
+     * @param nodeId id of expression that creates object.
      */
-    public NSDRoot(String label)
+    public NSDRoot(String nodeId, String label)
     {
-        super(label);
+        super(nodeId, label);
     }
 
     /**
      * @param label The element's label.
      * @param children The element's initial child elements.
      */
-    public NSDRoot(String label, Collection<? extends NSDElement> children)
+    public NSDRoot(String nodeId, String label, Collection<? extends NSDElement> children)
     {
-        super(label, children);
+        super(nodeId, label, children);
     }
 
     @Override

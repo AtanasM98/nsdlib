@@ -16,17 +16,17 @@ public class NSDForever extends NSDContainer<NSDElement>
     /**
      * Constructs an empty forever loop block.
      */
-    public NSDForever()
+    public NSDForever(String nodeId)
     {
-        super(null);
+        super(nodeId, (String) null);
     }
 
     /**
      * @param children The element's initial child elements.
      */
-    public NSDForever(Collection<? extends NSDElement> children)
+    public NSDForever(String nodeId, Collection<? extends NSDElement> children)
     {
-        super(null, children);
+        super(nodeId, null, children);
     }
 
     @Override

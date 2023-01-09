@@ -13,21 +13,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class NSDDecisionTest
 {
-    private static final NSDContainer<NSDElement> child0 = new NSDContainer<>("c0");
-    private static final NSDContainer<NSDElement> child1 = new NSDContainer<>("c1");
+    private static final NSDContainer<NSDElement> child0 = new NSDContainer<>(null, "c0");
+    private static final NSDContainer<NSDElement> child1 = new NSDContainer<>(null, "c1");
 
     @Test
     public void addsChildrenGivenToConstructor()
     {
-        NSDDecision obj = new NSDDecision("foo");
+        NSDDecision obj = new NSDDecision(null, "foo");
         assertEquals(0, obj.getThen().countChildren());
         assertEquals(0, obj.getElse().countChildren());
 
-        obj = new NSDDecision("foo", Collections.singletonList(child0));
+        obj = new NSDDecision(null, "foo", Collections.singletonList(child0));
         assertEquals(1, obj.getThen().countChildren());
         assertEquals(0, obj.getElse().countChildren());
 
-        obj = new NSDDecision("foo", Collections.singletonList(child0), Collections.singletonList(child1));
+        obj = new NSDDecision(null, "foo", Collections.singletonList(child0), Collections.singletonList(child1));
         assertEquals(1, obj.getThen().countChildren());
         assertEquals(1, obj.getElse().countChildren());
     }
@@ -35,7 +35,7 @@ public class NSDDecisionTest
     @Test
     public void hasTandFLabelsByDefault()
     {
-        NSDDecision obj = new NSDDecision("foo");
+        NSDDecision obj = new NSDDecision(null, "foo");
         assertEquals("T", obj.getThen().getLabel());
         assertEquals("F", obj.getElse().getLabel());
     }
@@ -43,7 +43,7 @@ public class NSDDecisionTest
     @Test
     public void convertsToAlternativesRenderPart()
     {
-        NSDDecision obj = new NSDDecision("foo");
+        NSDDecision obj = new NSDDecision(null, "foo");
         RenderPart part = obj.toRenderPart();
 
         assertTrue(part instanceof AlternativesRenderPart);

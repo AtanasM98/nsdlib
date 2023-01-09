@@ -1,6 +1,7 @@
 package nsdlib.rendering.parts;
 
 import java.util.Collection;
+import java.util.Objects;
 
 import nsdlib.elements.NSDElement;
 import nsdlib.rendering.RenderColor;
@@ -39,13 +40,16 @@ public class RootRenderPart extends RenderPart implements IContainerHolderRender
 
     @Override
     public boolean equals(Object o) {
-        if(!super.equals(o)) return false;
-        RootRenderPart root = (RootRenderPart) o;
-        if(!content.equals(root.getContent())) return false;
-        if(this.boxHeight != root.boxHeight ||
-                !this.size.equals(root.size) ||
-                this.padHorizontal != root.padHorizontal) return false;
-        return true;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        RootRenderPart that = (RootRenderPart) o;
+        return padHorizontal == that.padHorizontal && boxHeight == that.boxHeight && label.equals(that.label) && content.equals(that.content) && size.equals(that.size);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(label, content, size, padHorizontal, boxHeight);
     }
 
     @Override

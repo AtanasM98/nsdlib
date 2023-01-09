@@ -17,20 +17,20 @@ public class AlternativesRenderPartTest
     @Test
     public void findsForSource()
     {
-        NSDElement source0 = new NSDInstruction("source0");
+        NSDElement source0 = new NSDInstruction(null, "source0");
         MockRenderPart child0 = new MockRenderPart(source0);
 
-        NSDElement source1 = new NSDInstruction("source1");
+        NSDElement source1 = new NSDInstruction(null, "source1");
         MockRenderPart child1 = new MockRenderPart(source1);
 
-        NSDElement sourceObj = new NSDInstruction("sourceObj");
+        NSDElement sourceObj = new NSDInstruction(null, "sourceObj");
         AlternativesRenderPart obj = new AlternativesRenderPart(sourceObj, "condition",
                 Arrays.asList("left", "right"), Arrays.asList(child0, child1));
 
         assertSame(obj, obj.findForSource(sourceObj));
         assertSame(child0, obj.findForSource(source0));
         assertSame(child1, obj.findForSource(source1));
-        assertNull(obj.findForSource(new NSDInstruction("other")));
+        assertNull(obj.findForSource(new NSDInstruction(null, "other")));
     }
 
     @Test

@@ -1,8 +1,6 @@
 package nsdlib.rendering.renderer.awt;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import nsdlib.rendering.RenderColor;
@@ -59,6 +57,9 @@ public class AwtRenderAdapter extends RenderAdapter<BufferedImage>
     }
 
     @Override
+    public void drawPolygon(int[] x, int[] y, int n) { g.drawPolygon(new Polygon(x, y, n)); }
+
+    @Override
     public void fillRect(int x, int y, int w, int h, RenderColor col)
     {
         if (col == null) {
@@ -69,6 +70,22 @@ public class AwtRenderAdapter extends RenderAdapter<BufferedImage>
 
         g.setColor(toAwtColor(col));
         g.fillRect(x, y, w + 1, h + 1);
+
+        g.setColor(prevColor);
+    }
+
+    @Override
+    public void fillPolygon(int[] x, int[] y, int n, RenderColor col)
+    {
+        if (col == null) {
+            return;
+        }
+
+        Color prevColor = g.getColor();
+
+        g.setColor(toAwtColor(col));
+        Polygon p = new Polygon(x, y, n);
+        g.fillPolygon(p);
 
         g.setColor(prevColor);
     }

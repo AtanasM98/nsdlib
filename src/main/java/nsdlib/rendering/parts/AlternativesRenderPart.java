@@ -1,9 +1,6 @@
 package nsdlib.rendering.parts;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import nsdlib.elements.NSDElement;
 import nsdlib.rendering.RenderColor;
@@ -22,11 +19,10 @@ public class AlternativesRenderPart extends RenderPart implements IContainerHold
     private final String label;
     private final List<String> pathLabels;
     private final ContainerRenderPart content;
-
     private int caseWidth;
-
     private Size size;
     private int headingHeight;
+    private List<RenderColor> caseColors;
 
     /**
      * Constructs a new alternatives part.
@@ -43,6 +39,7 @@ public class AlternativesRenderPart extends RenderPart implements IContainerHold
 
         this.label = label;
         this.pathLabels = Collections.unmodifiableList(new ArrayList<>(pathLabels));
+        this.caseColors = new ArrayList<RenderColor>(pathLabels.size());
 
         this.content = new ContainerRenderPart(Orientation.HORIZONTAL, pathContents);
     }
@@ -58,20 +55,32 @@ public class AlternativesRenderPart extends RenderPart implements IContainerHold
 
     @Override
     public boolean equals(Object o) {
-        if(!super.equals(o)) return false;
-        AlternativesRenderPart alt = (AlternativesRenderPart) o;
-        if(!this.content.equals(alt.content) ||
-            !this.size.equals(alt.size) ||
-            !this.pathLabels.equals(alt.pathLabels) ||
-            this.headingHeight != alt.headingHeight ||
-            this.caseWidth != alt.caseWidth) return false;
-        return true;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        AlternativesRenderPart that = (AlternativesRenderPart) o;
+        return caseWidth == that.caseWidth && headingHeight == that.headingHeight && Objects.equals(label, that.label) && Objects.equals(pathLabels, that.pathLabels) && Objects.equals(content, that.content) && Objects.equals(size, that.size);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), label, pathLabels, content, caseWidth, size, headingHeight);
     }
 
     @Override
     public void setBackground(RenderColor color) {
         this.background = color;
         this.content.setBackground(RenderColor.WHITE);
+    }
+
+    public void setBackgroundCase(RenderColor color, int index) {
+        try {
+            this.caseColors.set(index, color);
+        }catch (IndexOutOfBoundsException e) {
+            if(index == this.caseColors.size()) {
+                this.caseColors.add(color);
+            }
+        }
     }
 
     @Override
@@ -128,10 +137,7 @@ public class AlternativesRenderPart extends RenderPart implements IContainerHold
 
     private int drawHeading(RenderAdapter<?> a, int x, int y, int w)
     {
-        a.drawRect(x, y, w, headingHeight);
-
         int triangleHeight;
-
         if(this.content.getChildren().size() > 2)
             triangleHeight = headingHeight / 2;
         else
@@ -139,12 +145,6 @@ public class AlternativesRenderPart extends RenderPart implements IContainerHold
 
         caseWidth = w / pathLabels.size();
         int lastSepX = x + w - caseWidth;
-
-        a.drawLine(lastSepX, y + triangleHeight, x + w, y);
-        a.drawLine(x, y, lastSepX, y + triangleHeight);
-
-        a.drawStringCentered(label, lastSepX, y);
-
         if(this.content.getChildren().size() > 2)
             y += triangleHeight;
         else
@@ -153,9 +153,14 @@ public class AlternativesRenderPart extends RenderPart implements IContainerHold
         // a^2 + b^2 = c^2
         int dx = lastSepX - x, dy = headingHeight;
         double hypotLength = Math.sqrt(dx * dx + dy * dy);
-
         // tan of angle between x-axis and hypotenuse
         double linkAngleTan = Math.tan(Math.asin(triangleHeight / hypotLength));
+        for(int i = 0, n = pathLabels.size(); i < n; ++i) {
+            if (this.content.getChildren().size() > 2)
+                a.fillRect(x + (caseWidth * i), y - triangleHeight, caseWidth, headingHeight, this.caseColors.get(i));
+            else
+                a.fillRect(x + (caseWidth * i), y - triangleHeight / 2, caseWidth, headingHeight, this.caseColors.get(i));
+        }
 
         for (int i = 0, n = pathLabels.size(); i < n; ++i) {
             a.drawStringCentered(pathLabels.get(i), x + caseWidth / 2, y);
@@ -168,6 +173,19 @@ public class AlternativesRenderPart extends RenderPart implements IContainerHold
                 a.drawLine(x, y - adjacent, x, y + triangleHeight);
             }
         }
+
+        x -= caseWidth * pathLabels.size();
+        if(this.content.getChildren().size() > 2)
+            y -= triangleHeight;
+        else
+            y -= triangleHeight / 2;
+
+        a.drawRect(x, y, w, headingHeight);
+        int[] xSet = new int[]{lastSepX, x + w, x};
+        int[] ySet = new int[]{y + triangleHeight, y, y};
+        a.fillPolygon(xSet, ySet, 3, this.background);
+        a.drawPolygon(xSet, ySet, 3);
+        a.drawStringCentered(label, lastSepX, y);
 
         return headingHeight;
     }

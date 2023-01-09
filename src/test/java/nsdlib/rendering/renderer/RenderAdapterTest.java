@@ -36,8 +36,18 @@ public class RenderAdapterTest
         }
 
         @Override
+        public void drawPolygon(int[] x, int[] y, int n) {
+
+        }
+
+        @Override
         public void fillRect(int x, int y, int w, int h, RenderColor col)
         {
+        }
+
+        @Override
+        public void fillPolygon(int[] x, int[] y, int n, RenderColor col) {
+
         }
 
         @Override

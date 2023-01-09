@@ -12,7 +12,7 @@ public class NSDInstructionTest
     @Test
     public void convertsToBoxRenderPart()
     {
-        NSDInstruction obj = new NSDInstruction("foo");
+        NSDInstruction obj = new NSDInstruction(null, "foo");
         RenderPart part = obj.toRenderPart();
 
         assertTrue(part instanceof BoxRenderPart);

@@ -38,6 +38,11 @@ public class NSDRendererTest
                 }
 
                 @Override
+                public void fillPolygon(int[] x, int[] y, int n, RenderColor col) {
+
+                }
+
+                @Override
                 protected void drawStringAt(String s, int x, int y)
                 {
                 }
@@ -45,6 +50,10 @@ public class NSDRendererTest
                 @Override
                 public void drawRect(int x, int y, int w, int h)
                 {
+                }
+
+                @Override
+                public void drawPolygon(int[] x, int[] y, int n) {
                 }
 
                 @Override
@@ -100,7 +109,7 @@ public class NSDRendererTest
 
         public NSDElementMock()
         {
-            super("mock");
+            super(null, "mock");
         }
 
         @Override

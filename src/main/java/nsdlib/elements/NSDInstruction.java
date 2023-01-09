@@ -12,9 +12,9 @@ public class NSDInstruction extends NSDElement
     /**
      * @param label The element's label.
      */
-    public NSDInstruction(String label)
+    public NSDInstruction(String nodeId, String label)
     {
-        super(label);
+        super(nodeId, label);
     }
 
     @Override

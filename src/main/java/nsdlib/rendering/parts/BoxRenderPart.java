@@ -6,6 +6,8 @@ import nsdlib.rendering.Size;
 import nsdlib.rendering.renderer.RenderAdapter;
 import nsdlib.rendering.renderer.RenderContext;
 
+import java.util.Objects;
+
 
 /**
  * Render part for a simple instruction box.
@@ -28,13 +30,18 @@ public class BoxRenderPart extends RenderPart
         this.label = s;
     }
 
-        @Override
-        public boolean equals(Object o) {
-            if(!super.equals(o)) return false;
-            BoxRenderPart box = (BoxRenderPart) o;
-            if(this.label.equals(box.label) ||
-                    !this.size.equals(box.size)) return false;
-            return true;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        BoxRenderPart that = (BoxRenderPart) o;
+        return Objects.equals(label, that.label) && Objects.equals(size, that.size);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), label, size);
     }
 
     @Override

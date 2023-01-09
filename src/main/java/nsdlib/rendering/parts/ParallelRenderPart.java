@@ -1,6 +1,7 @@
 package nsdlib.rendering.parts;
 
 import java.util.Collection;
+import java.util.Objects;
 
 import nsdlib.elements.NSDElement;
 import nsdlib.rendering.RenderColor;
@@ -42,12 +43,15 @@ public class ParallelRenderPart extends RenderPart implements IContainerHolderRe
 
     @Override
     public boolean equals(Object o) {
-        if(!super.equals(o)) return false;
-        ParallelRenderPart parallel = (ParallelRenderPart) o;
-        if(!content.equals(parallel.getContent())) return false;
-        if(this.decoHeight != parallel.decoHeight ||
-                !this.size.equals(parallel.size)) return false;
-        return true;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ParallelRenderPart that = (ParallelRenderPart) o;
+        return decoHeight == that.decoHeight && content.equals(that.content) && size.equals(that.size);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(content, size, decoHeight);
     }
 
     @Override

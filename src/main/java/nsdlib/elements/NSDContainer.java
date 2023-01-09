@@ -24,7 +24,17 @@ public class NSDContainer<T extends NSDElement> extends NSDElement implements It
      */
     public NSDContainer(String label)
     {
-        this(label, null);
+        this(label, (Collection<? extends T>) null);
+    }
+
+    /**
+     * @param label The element's label.
+     * @nodeId node id of expression that represents this object
+     */
+    public NSDContainer(String nodeId, String label)
+    {
+        super(nodeId, label);
+        this.children = new ArrayList<>();
     }
 
     public List<T> getChildren() {
@@ -37,7 +47,19 @@ public class NSDContainer<T extends NSDElement> extends NSDElement implements It
      */
     public NSDContainer(String label, Collection<? extends T> children)
     {
-        super(label);
+        super(null, label);
+
+        this.children = children == null ? new ArrayList<>() : new ArrayList<>(children);
+    }
+
+    /**
+     * @param label The element's label.
+     * @param children The element's initial child elements.
+     * @nodeId node id of expression that represents this object
+     */
+    public NSDContainer(String nodeId, String label, Collection<? extends T> children)
+    {
+        super(nodeId, label);
 
         this.children = children == null ? new ArrayList<>() : new ArrayList<>(children);
     }
@@ -152,14 +174,16 @@ public class NSDContainer<T extends NSDElement> extends NSDElement implements It
 
     @Override
     public boolean equals(Object o) {
-        if(!super.equals(o))
-            return false;
-        for (int i = 0; i < this.countChildren(); i++){
-            if(!this.getChild(i).equals(((NSDContainer<?>) o).getChild(i))) {
-                return false;
-            }
-        }
-        return true;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        NSDContainer<?> that = (NSDContainer<?>) o;
+        return children.equals(that.children);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), children);
     }
 
     /**

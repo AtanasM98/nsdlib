@@ -13,23 +13,23 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class NSDCaseTest
 {
-    private static final NSDContainer<NSDElement> child0 = new NSDContainer<>("c0");
-    private static final NSDContainer<NSDElement> child1 = new NSDContainer<>("c1");
+    private static final NSDContainer<NSDElement> child0 = new NSDContainer<>(null, "c0");
+    private static final NSDContainer<NSDElement> child1 = new NSDContainer<>(null, "c1");
 
     @Test
     public void addsChildrenGivenToConstructor()
     {
-        NSDCase obj = new NSDCase("foo");
+        NSDCase obj = new NSDCase(null, "foo");
         assertEquals(0, obj.countChildren());
 
-        obj = new NSDCase("foo", Arrays.asList(child0, child1));
+        obj = new NSDCase(null, "foo", Arrays.asList(child0, child1));
         assertEquals(2, obj.countChildren());
     }
 
     @Test
     public void convertsToAlternativesRenderPart()
     {
-        NSDCase obj = new NSDCase("foo", Arrays.asList(child0, child1));
+        NSDCase obj = new NSDCase(null, "foo", Arrays.asList(child0, child1));
         RenderPart part = obj.toRenderPart();
 
         assertTrue(part instanceof AlternativesRenderPart);

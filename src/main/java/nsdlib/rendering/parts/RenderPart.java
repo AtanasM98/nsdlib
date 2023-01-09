@@ -6,6 +6,8 @@ import nsdlib.rendering.Size;
 import nsdlib.rendering.renderer.RenderAdapter;
 import nsdlib.rendering.renderer.RenderContext;
 
+import java.util.Objects;
+
 
 /**
  * Base class for every NS part that can be rendered. Before
@@ -30,18 +32,6 @@ public abstract class RenderPart
     public int getPositionX() { return positionX; }
     public int getPositionY() { return positionY; }
     public int getWidth() { return width; }
-
-    @Override
-    public boolean equals(Object o) {
-        if(this.getClass() != o.getClass() || o == null) return false;
-        RenderPart renderPart = (RenderPart) o;
-        if(!this.source.equals(renderPart.source)) return false;
-        if(this.background != renderPart.background ||
-                this.width != renderPart.width ||
-                this.positionX != renderPart.positionX ||
-                this.positionY != renderPart.positionY) return false;
-        return true;
-    }
 
     /**
      * Constructs a new part with the given element as its source.
@@ -131,4 +121,17 @@ public abstract class RenderPart
      * @see #layout(RenderContext)
      */
     public abstract void render(RenderAdapter<?> adapter, int x, int y, int w);
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RenderPart that = (RenderPart) o;
+        return positionX == that.positionX && positionY == that.positionY && width == that.width && Objects.equals(background, that.background);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(source, background, positionX, positionY, width);
+    }
 }

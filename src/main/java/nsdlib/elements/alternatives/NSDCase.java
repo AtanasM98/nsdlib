@@ -20,18 +20,18 @@ public class NSDCase extends NSDContainer<NSDContainer<NSDElement>>
     /**
      * @param label The element's label.
      */
-    public NSDCase(String label)
+    public NSDCase(String nodeId, String label)
     {
-        super(label);
+        super(nodeId, label);
     }
 
     /**
      * @param label The element's label.
      * @param children The element's initial child elements.
      */
-    public NSDCase(String label, Collection<? extends NSDContainer<NSDElement>> children)
+    public NSDCase(String nodeId, String label, Collection<? extends NSDContainer<NSDElement>> children)
     {
-        super(label, children);
+        super(nodeId, label, children);
     }
 
     @Override

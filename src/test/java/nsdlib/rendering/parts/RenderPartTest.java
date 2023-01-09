@@ -13,7 +13,7 @@ public class RenderPartTest
     @Test
     public void storesSource()
     {
-        NSDElement source = new NSDInstruction("source");
+        NSDElement source = new NSDInstruction(null, "source");
         assertSame(source, new MockRenderPart(source).getSource());
 
         assertNull(new MockRenderPart().getSource());
@@ -22,18 +22,18 @@ public class RenderPartTest
     @Test
     public void findsForSource()
     {
-        NSDElement source = new NSDInstruction("source");
+        NSDElement source = new NSDInstruction(null, "source");
         MockRenderPart part = new MockRenderPart(source);
 
         assertSame(part, part.findForSource(source));
 
-        assertNull(part.findForSource(new NSDInstruction("other")));
+        assertNull(part.findForSource(new NSDInstruction(null, "other")));
     }
 
     @Test
     public void setsBackground()
     {
-        NSDElement source = new NSDInstruction("source");
+        NSDElement source = new NSDInstruction(null, "source");
         MockRenderPart part = new MockRenderPart(source);
 
         assertNull(part.getBackground());

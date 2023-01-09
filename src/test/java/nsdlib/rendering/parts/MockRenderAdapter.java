@@ -31,9 +31,19 @@ public class MockRenderAdapter extends RenderAdapter<Void>
     }
 
     @Override
+    public void drawPolygon(int[] x, int[] y, int n) {
+
+    }
+
+    @Override
     public void fillRect(int x, int y, int w, int h, RenderColor col)
     {
         this.fillRectCalled = true;
+    }
+
+    @Override
+    public void fillPolygon(int[] x, int[] y, int n, RenderColor col) {
+
     }
 
     @Override

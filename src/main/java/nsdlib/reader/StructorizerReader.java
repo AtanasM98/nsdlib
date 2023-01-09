@@ -61,7 +61,7 @@ public class StructorizerReader implements NSDReader
     private NSDRoot parseRoot(Element e) throws NSDReaderException
     {
         String label = deserialize(e.getAttribute("text")).get(0);
-        NSDRoot root = new NSDRoot(label);
+        NSDRoot root = new NSDRoot(null, label);
 
         Element children = (Element) e.getElementsByTagName("children").item(0);
         addChildren(root, children);
@@ -180,13 +180,13 @@ public class StructorizerReader implements NSDReader
     private NSDInstruction parseInstruction(Element e) throws NSDReaderException
     {
         String label = deserialize(e.getAttribute("text")).get(0);
-        return new NSDInstruction(label);
+        return new NSDInstruction(null, label);
     }
 
     private NSDDecision parseDecision(Element e) throws NSDReaderException
     {
         String label = deserialize(e.getAttribute("text")).get(0);
-        NSDDecision dec = new NSDDecision(label);
+        NSDDecision dec = new NSDDecision(null, label);
 
         Element qTrue = (Element) e.getElementsByTagName("qTrue").item(0);
         addChildren(dec.getThen(), qTrue);
@@ -200,14 +200,14 @@ public class StructorizerReader implements NSDReader
     private NSDCase parseCase(Element e) throws NSDReaderException
     {
         List<String> lines = deserialize(e.getAttribute("text"));
-        NSDCase cas = new NSDCase(lines.get(0));
+        NSDCase cas = new NSDCase(null, lines.get(0));
 
         NodeList qCase = e.getElementsByTagName("qCase");
         for (int i = 0; i < qCase.getLength(); ++i) {
             String label = lines.get(i + 1);
             Element qCaseItem = (Element) qCase.item(i);
 
-            NSDContainer<NSDElement> cont = new NSDContainer<>(label);
+            NSDContainer<NSDElement> cont = new NSDContainer<>(null, label);
             addChildren(cont, qCaseItem);
 
             cas.addChild(cont);
@@ -218,7 +218,7 @@ public class StructorizerReader implements NSDReader
 
     private NSDForever parseForever(Element e) throws NSDReaderException
     {
-        NSDForever loop = new NSDForever();
+        NSDForever loop = new NSDForever(null);
 
         Element qForever = (Element) e.getElementsByTagName("qForever").item(0);
         addChildren(loop, qForever);
@@ -229,7 +229,7 @@ public class StructorizerReader implements NSDReader
     private NSDTestFirstLoop parseTestFirstLoop(Element e) throws NSDReaderException
     {
         String label = deserialize(e.getAttribute("text")).get(0);
-        NSDTestFirstLoop loop = new NSDTestFirstLoop(label);
+        NSDTestFirstLoop loop = new NSDTestFirstLoop(null, label);
 
         Element qWhile = (Element) e.getElementsByTagName("qWhile").item(0);
         addChildren(loop, qWhile);
@@ -240,7 +240,7 @@ public class StructorizerReader implements NSDReader
     private NSDTestLastLoop parseTestLastLoop(Element e) throws NSDReaderException
     {
         String label = deserialize(e.getAttribute("text")).get(0);
-        NSDTestLastLoop loop = new NSDTestLastLoop(label);
+        NSDTestLastLoop loop = new NSDTestLastLoop(null, label);
 
         Element qRepeat = (Element) e.getElementsByTagName("qRepeat").item(0);
         addChildren(loop, qRepeat);
@@ -250,13 +250,13 @@ public class StructorizerReader implements NSDReader
 
     private NSDParallel parseParallel(Element e) throws NSDReaderException
     {
-        NSDParallel parallel = new NSDParallel();
+        NSDParallel parallel = new NSDParallel(null);
 
         NodeList qPara = e.getElementsByTagName("qPara");
         for (int i = 0; i < qPara.getLength(); ++i) {
             Element qParaItem = (Element) qPara.item(i);
 
-            NSDContainer<NSDElement> cont = new NSDContainer<>("");
+            NSDContainer<NSDElement> cont = new NSDContainer<>(null, "");
             addChildren(cont, qParaItem);
 
             parallel.addChild(cont);

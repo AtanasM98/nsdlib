@@ -11,7 +11,7 @@ public class NSDElementTest
     @Test
     public void updatesLabel()
     {
-        NSDElement obj = new NSDElement("foo") {
+        NSDElement obj = new NSDElement(null, "foo") {
             @Override
             public RenderPart toRenderPart()
             {

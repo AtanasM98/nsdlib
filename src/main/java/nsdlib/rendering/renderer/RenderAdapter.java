@@ -57,6 +57,15 @@ public abstract class RenderAdapter<T>
     public abstract void drawRect(int x, int y, int w, int h);
 
     /**
+     * Draws a polygon with the given lists of coordinates.
+     *
+     * @param x Set of x parts of the coordinates.
+     * @param y Set of y parts of the coordinates.
+     * @param n Number of coordinates.
+     */
+    public abstract void drawPolygon(int[] x, int[] y, int n);
+
+    /**
      * Fills a rectangle with the given color. The coordinates are calculated
      * exactly the same as for {@link #drawRect(int, int, int, int)}.
      *
@@ -67,6 +76,16 @@ public abstract class RenderAdapter<T>
      * @param col The color to fill the rectangle with.
      */
     public abstract void fillRect(int x, int y, int w, int h, RenderColor col);
+
+    /**
+     * Draws a polygon with the given lists of coordinates and colors it in given color.
+     *
+     * @param x Set of x parts of the coordinates.
+     * @param y Set of y parts of the coordinates.
+     * @param n Number of coordinates.
+     * @param col Color of polygon.
+     */
+    public abstract void fillPolygon(int[] x, int[] y, int n, RenderColor col);
 
     /**
      * Draws a left-aligned string. The given coordinates specify the top-left

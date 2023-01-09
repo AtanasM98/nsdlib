@@ -17,17 +17,17 @@ public class NSDParallel extends NSDContainer<NSDContainer<NSDElement>>
     /**
      * Constructs an empty "parallel processing" block.
      */
-    public NSDParallel()
+    public NSDParallel(String nodeId)
     {
-        super(null);
+        super(nodeId, (String) null);
     }
 
     /**
      * @param children The element's initial child elements.
      */
-    public NSDParallel(Collection<? extends NSDContainer<NSDElement>> children)
+    public NSDParallel(String nodeId, Collection<? extends NSDContainer<NSDElement>> children)
     {
-        super(null, children);
+        super(nodeId, null, children);
     }
 
     @Override

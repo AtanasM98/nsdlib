@@ -17,18 +17,18 @@ public class NSDTestFirstLoop extends NSDContainer<NSDElement>
     /**
      * @param label The element's label.
      */
-    public NSDTestFirstLoop(String label)
+    public NSDTestFirstLoop(String nodeId, String label)
     {
-        super(label);
+        super(nodeId, label);
     }
 
     /**
      * @param label The element's label.
      * @param children The element's initial child elements.
      */
-    public NSDTestFirstLoop(String label, Collection<? extends NSDElement> children)
+    public NSDTestFirstLoop(String nodeId, String label, Collection<? extends NSDElement> children)
     {
-        super(label, children);
+        super(nodeId, label, children);
     }
 
     @Override
