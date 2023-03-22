@@ -2,6 +2,7 @@ package nsdlib.rendering.parts;
 
 import java.util.*;
 
+import nsdlib.elements.NSDContainer;
 import nsdlib.elements.NSDElement;
 import nsdlib.rendering.RenderColor;
 import nsdlib.rendering.Size;
@@ -17,7 +18,6 @@ public class ContainerRenderPart extends RenderPart
 {
     private final Orientation orientation;
     private final List<RenderPart> children;
-
     private Size size;
 
     /**
@@ -28,6 +28,19 @@ public class ContainerRenderPart extends RenderPart
      */
     public ContainerRenderPart(Orientation orientation, Collection<? extends RenderPart> children)
     {
+        this.orientation = orientation;
+        this.children = Collections.unmodifiableList(new ArrayList<>(children));
+    }
+
+    /**
+     * Constructs a new container part with the given orientation and children.
+     *
+     * @param orientation Whether this is a horizontal or vertical layout.
+     * @param children This container's child parts.
+     */
+    public ContainerRenderPart(NSDContainer source, Orientation orientation, Collection<? extends RenderPart> children)
+    {
+        super(source);
         this.orientation = orientation;
         this.children = Collections.unmodifiableList(new ArrayList<>(children));
     }
@@ -75,7 +88,13 @@ public class ContainerRenderPart extends RenderPart
     @Override
     public void layout(RenderContext ctx)
     {
-        int childMaxWidth = 0, childMaxHeight = 0;
+        Size labelSize = new Size(0, 0);
+        NSDElement source = getSource();
+        if(source != null){
+            labelSize = ctx.box(source.getLabel());
+        }
+        int childMaxWidth = labelSize.width, childMaxHeight = 0;
+        int totalWidth = 0;
         int totalHeight = 0;
 
         for (RenderPart e : children) {
@@ -85,12 +104,13 @@ public class ContainerRenderPart extends RenderPart
             childMaxWidth = Math.max(childMaxWidth, eSize.width);
             childMaxHeight = Math.max(childMaxHeight, eSize.height);
 
+            totalWidth += eSize.width;
             totalHeight += eSize.height;
         }
 
         int width, height;
         if (orientation == Orientation.HORIZONTAL) {
-            width = childMaxWidth * children.size();
+            width = totalWidth;
             height = childMaxHeight;
         } else {
             width = childMaxWidth;
@@ -114,31 +134,60 @@ public class ContainerRenderPart extends RenderPart
     @Override
     public void render(RenderAdapter<?> adapter, int x, int y, int w)
     {
-        if (children.isEmpty()) {
-            return;
-        }
         positionX = x;
         positionY = y;
         width = w;
-
+        int[] childWidths = createChildWidths(w);
+        if (children.isEmpty()) {
+            return;
+        }
+        setSize(new Size(w, size.height));
         adapter.fillRect(x, y, w, size.height, getBackground());
-
         adapter.drawRect(x, y, w, size.height);
 
-        int childWidth = (orientation == Orientation.HORIZONTAL)
-                ? (w / children.size())
-                : w;
-
-        for (RenderPart e : children) {
-            e.render(adapter, x, y, childWidth);
-
+        for(int i = 0; i < children.size(); i++) {
+            children.get(i).render(adapter, x, y, childWidths[i]);
             if (orientation == Orientation.HORIZONTAL) {
-                x += childWidth;
+                x += childWidths[i];
                 adapter.drawLine(x, y, x, y + size.height);
             } else {
-                y += e.getSize().height;
+                y += children.get(i).getSize().height;
             }
         }
+    }
+
+    public int[] createChildWidths(int w) {
+        boolean biggerThanHalf = false;
+        int[] childWidths = new int[children.size()];
+        int horChildWidthTotal = 0;
+
+        int minIndex = 0;
+        int minWidth = Integer.MAX_VALUE;
+        for (int i = 0; i < children.size(); i++) {
+            if(orientation == Orientation.HORIZONTAL) {
+                horChildWidthTotal += children.get(i).getSize().width;
+                int childWidth = children.get(i).getSize().width;
+                if(minWidth > childWidth) {
+                    minWidth = childWidth;
+                    minIndex = i;
+                }
+                childWidths[i] = childWidth;
+                if(childWidth >= (w / children.size()))
+                    biggerThanHalf = true;
+            }
+            else {
+                childWidths[i] = width;
+            }
+        }
+        if(orientation == Orientation.HORIZONTAL && children.size() > 0) {
+            if (horChildWidthTotal < w) {
+                if(biggerThanHalf)
+                    childWidths[minIndex] += w - horChildWidthTotal;
+                else
+                    Arrays.fill(childWidths, w / children.size());
+            }
+        }
+        return childWidths;
     }
 
     /**

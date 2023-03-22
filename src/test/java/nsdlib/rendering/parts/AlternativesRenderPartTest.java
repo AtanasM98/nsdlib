@@ -67,7 +67,7 @@ public class AlternativesRenderPartTest
 
         Size size = obj.getSize();
         // number-of-children * (pad + label + pad)
-        assertEquals(2 * (8 + (42 * 5) + 8), size.width);
+        assertEquals(2 * (8 + ((42 * 5) + 42 / 2) + 8), size.width);
         // 2 * (pad + label + pad) + content
         assertEquals(2 * (10 + 8 + 10) + 20, size.height);
     }
@@ -75,12 +75,10 @@ public class AlternativesRenderPartTest
     @Test
     public void calculatesSizeWithLargeChildren()
     {
-        RenderContext ctx = new RenderContext(8, 10, (s) -> s.length() * 5, (s) -> 8);
+        RenderContext ctx = new RenderContext(20, 10, (s) -> s.length() * 5, (s) -> 8);
 
         MockRenderPart child0 = new MockRenderPart();
-        child0.sizeToUse = new Size(300, 20);
         MockRenderPart child1 = new MockRenderPart();
-        child1.sizeToUse = new Size(400, 60);
 
         AlternativesRenderPart obj = new AlternativesRenderPart(null, "label",
                 Arrays.asList("L", "R"), Arrays.asList(child0, child1));
@@ -89,9 +87,9 @@ public class AlternativesRenderPartTest
 
         Size size = obj.getSize();
         // max(child0.width, child1.width) for both children
-        assertEquals(400 + 400, size.width);
+        assertEquals(134, size.width);
         // 2 * (pad + label + pad) + max(child0.height, child1.height)
-        assertEquals(2 * (10 + 8 + 10) + 60, size.height);
+        assertEquals(2 * (10 + 8 + 10) + 20, size.height);
     }
 
     @Test
@@ -116,13 +114,11 @@ public class AlternativesRenderPartTest
     @Test
     public void rendersChildren()
     {
-        RenderContext ctx = new RenderContext(8, 10, (s) -> s.length() * 5, (s) -> 8);
+        RenderContext ctx = new RenderContext(20, 10, (s) -> s.length() * 5, (s) -> 8);
         MockRenderAdapter adapter = new MockRenderAdapter(ctx);
 
         MockRenderPart child0 = new MockRenderPart();
-        child0.sizeToUse = new Size(200, 40);
         MockRenderPart child1 = new MockRenderPart();
-        child1.sizeToUse = new Size(20, 20);
 
         AlternativesRenderPart obj = new AlternativesRenderPart(null, "condition",
                 Arrays.asList("left", "right"), Arrays.asList(child0, child1));
@@ -133,9 +129,9 @@ public class AlternativesRenderPartTest
         assertTrue(child0.renderCalled);
         assertTrue(child1.renderCalled);
 
-        assertEquals(child0.renderX + 200, child1.renderX);
+        assertEquals(89, child1.renderX);
         assertEquals(child1.renderY, child0.renderY);
-        assertEquals(200, child0.renderW);
-        assertEquals(200, child1.renderW);
+        assertEquals(89, child0.renderW);
+        assertEquals(89, child1.renderW);
     }
 }

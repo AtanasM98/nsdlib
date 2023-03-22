@@ -32,7 +32,7 @@ public class BoxRenderPartTest
 
         Size size = obj.getSize();
         // pad + label + pad
-        assertEquals(8 + (3 * 5) + 8, size.width);
+        assertEquals(8 + ((3 * 5) + 3 / 2) + 8, size.width);
         // pad + label + pad
         assertEquals(10 + 8 + 10, size.height);
     }

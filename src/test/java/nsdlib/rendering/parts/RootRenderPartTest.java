@@ -58,7 +58,7 @@ public class RootRenderPartTest
 
         Size size = obj.getSize();
         // pad + label + pad
-        assertEquals(8 + (4 * 5) + 8, size.width);
+        assertEquals(8 + ((4 * 5) + 4 / 2) + 8, size.width);
         // pad + label + pad + bottom
         assertEquals(10 + 8 + 10 + 10, size.height);
     }

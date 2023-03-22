@@ -1,8 +1,10 @@
 package nsdlib.rendering.parts;
 
+import java.sql.Array;
 import java.util.*;
 
 import nsdlib.elements.NSDElement;
+import nsdlib.elements.alternatives.NSDCase;
 import nsdlib.rendering.RenderColor;
 import nsdlib.rendering.Size;
 import nsdlib.rendering.parts.ContainerRenderPart.Orientation;
@@ -19,10 +21,10 @@ public class AlternativesRenderPart extends RenderPart implements IContainerHold
     private final String label;
     private final List<String> pathLabels;
     private final ContainerRenderPart content;
-    private int caseWidth;
+    private int[] caseWidths;
     private Size size;
     private int headingHeight;
-    private List<RenderColor> caseColors;
+    private final List<RenderColor> caseColors;
 
     /**
      * Constructs a new alternatives part.
@@ -51,7 +53,8 @@ public class AlternativesRenderPart extends RenderPart implements IContainerHold
             return headingHeight;
         }
     }
-    public int getCaseWidth() { return caseWidth; }
+
+    public int[] getCaseWidths() { return caseWidths; }
 
     @Override
     public boolean equals(Object o) {
@@ -59,12 +62,13 @@ public class AlternativesRenderPart extends RenderPart implements IContainerHold
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         AlternativesRenderPart that = (AlternativesRenderPart) o;
-        return caseWidth == that.caseWidth && headingHeight == that.headingHeight && Objects.equals(label, that.label) && Objects.equals(pathLabels, that.pathLabels) && Objects.equals(content, that.content) && Objects.equals(size, that.size);
+        return Arrays.equals(this.caseWidths, that.caseWidths) && headingHeight == that.headingHeight && Objects.equals(label,
+                that.label) && Objects.equals(pathLabels, that.pathLabels) && Objects.equals(content, that.content) && Objects.equals(size, that.size);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), label, pathLabels, content, caseWidth, size, headingHeight);
+        return Objects.hash(super.hashCode(), label, pathLabels, content, Arrays.hashCode(caseWidths), size, headingHeight);
     }
 
     @Override
@@ -81,6 +85,10 @@ public class AlternativesRenderPart extends RenderPart implements IContainerHold
                 this.caseColors.add(color);
             }
         }
+    }
+
+    public RenderColor getBackgroundCase(int index) {
+        return this.caseColors.get(index);
     }
 
     @Override
@@ -129,6 +137,7 @@ public class AlternativesRenderPart extends RenderPart implements IContainerHold
         positionX = x;
         positionY = y;
         width = w;
+        this.size = new Size(w, size.height);
 
         adapter.fillRect(x, y, w, headingHeight, getBackground());
         y += drawHeading(adapter, x, y, w);
@@ -137,56 +146,65 @@ public class AlternativesRenderPart extends RenderPart implements IContainerHold
 
     private int drawHeading(RenderAdapter<?> a, int x, int y, int w)
     {
-        int triangleHeight;
-        if(this.content.getChildren().size() > 2)
-            triangleHeight = headingHeight / 2;
-        else
-            triangleHeight = headingHeight;
-
-        caseWidth = w / pathLabels.size();
-        int lastSepX = x + w - caseWidth;
-        if(this.content.getChildren().size() > 2)
-            y += triangleHeight;
-        else
-            y += triangleHeight / 2;
-
-        // a^2 + b^2 = c^2
-        int dx = lastSepX - x, dy = headingHeight;
-        double hypotLength = Math.sqrt(dx * dx + dy * dy);
-        // tan of angle between x-axis and hypotenuse
-        double linkAngleTan = Math.tan(Math.asin(triangleHeight / hypotLength));
-        for(int i = 0, n = pathLabels.size(); i < n; ++i) {
-            if (this.content.getChildren().size() > 2)
-                a.fillRect(x + (caseWidth * i), y - triangleHeight, caseWidth, headingHeight, this.caseColors.get(i));
-            else
-                a.fillRect(x + (caseWidth * i), y - triangleHeight / 2, caseWidth, headingHeight, this.caseColors.get(i));
+        boolean caseRender = true;
+        if(this.getSource() != null) {
+            caseRender = this.getSource().getClass().equals(NSDCase.class);
         }
+        caseWidths = content.createChildWidths(w);
+        if(caseWidths.length > 0) {
+            int originalX = x;
+            int originalY = y;
+            int triangleHeight = ((caseRender) ? headingHeight / 3: headingHeight);
+            int lastSepX = x + w - caseWidths[caseWidths.length - 1];
+            y += ((caseRender) ? triangleHeight: triangleHeight / 2);
 
-        for (int i = 0, n = pathLabels.size(); i < n; ++i) {
-            a.drawStringCentered(pathLabels.get(i), x + caseWidth / 2, y);
-            x += caseWidth;
+            paintCaseColors(a, x, caseWidths, originalY);
 
-            // for all but last case (since it doesn't need vertical separators)
-            if (i < n - 1 && pathLabels.size() > 2) {
-                // calc. amount of pixels that current point is above link end
-                int adjacent = (int) Math.abs(linkAngleTan * (x - lastSepX));
-                a.drawLine(x, y - adjacent, x, y + triangleHeight);
+            // a^2 + b^2 = c^2
+            int dx = lastSepX - x, dy = headingHeight;
+            double hypotLength = Math.sqrt(dx * dx + dy * dy);
+            // tan of angle between x-axis and hypotenuse
+            double linkAngleTan = Math.tan(Math.asin(triangleHeight / hypotLength));
+
+            for (int i = 0, n = pathLabels.size(); i < n; ++i) {
+                if(caseRender) {
+                    a.drawStringCentered(pathLabels.get(i), x + caseWidths[i] / 2, y + (triangleHeight / 2));
+                } else {
+                    a.drawStringCentered(pathLabels.get(i), x + caseWidths[i] / 2, y);
+                }
+                x += caseWidths[i];
+
+                // for all but last case (since it doesn't need vertical separators)
+                if (i < n - 1 && caseRender) {
+                    // calc. amount of pixels that current point is above link end
+                    int adjacent = (int) Math.abs(linkAngleTan * (x - lastSepX));
+                    a.drawLine(x, y + triangleHeight - (adjacent * 2), x, y + (triangleHeight * 2));
+                }
+            }
+
+            x = originalX;
+            y = originalY;
+            a.drawRect(x, y, w, headingHeight);
+            int[] xSet = new int[]{lastSepX, x + w, x};
+            int[] ySet = new int[]{y + triangleHeight, y, y};
+            if(caseRender) {
+                ySet = new int[]{y + (triangleHeight * 2), y, y};
+            }
+            a.fillPolygon(xSet, ySet, 3, this.background);
+            a.drawPolygon(xSet, ySet, 3);
+
+            a.drawStringCentered(label, x + width / 2 , y - 5);
+        }
+        return headingHeight;
+    }
+
+    private void paintCaseColors(RenderAdapter<?> a, int x, int[] caseWidths, int originalY) {
+        if(!this.caseColors.isEmpty()) {
+            for(int i = 0, n = caseColors.size(); i < n; ++i) {
+                a.fillRect(x, originalY, caseWidths[i], headingHeight,
+                        this.caseColors.get(i));
+                x += caseWidths[i];
             }
         }
-
-        x -= caseWidth * pathLabels.size();
-        if(this.content.getChildren().size() > 2)
-            y -= triangleHeight;
-        else
-            y -= triangleHeight / 2;
-
-        a.drawRect(x, y, w, headingHeight);
-        int[] xSet = new int[]{lastSepX, x + w, x};
-        int[] ySet = new int[]{y + triangleHeight, y, y};
-        a.fillPolygon(xSet, ySet, 3, this.background);
-        a.drawPolygon(xSet, ySet, 3);
-        a.drawStringCentered(label, lastSepX, y);
-
-        return headingHeight;
     }
 }

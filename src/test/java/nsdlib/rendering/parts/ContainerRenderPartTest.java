@@ -99,9 +99,7 @@ public class ContainerRenderPartTest
         RenderContext ctx = new RenderContext(8, 10, (s) -> s.length() * 5, (s) -> 8);
 
         MockRenderPart child0 = new MockRenderPart();
-        child0.sizeToUse = new Size(200, 40);
         MockRenderPart child1 = new MockRenderPart();
-        child1.sizeToUse = new Size(20, 20);
 
         ContainerRenderPart obj = new ContainerRenderPart(Orientation.HORIZONTAL, Arrays.asList(child0, child1));
 
@@ -109,9 +107,9 @@ public class ContainerRenderPartTest
 
         Size size = obj.getSize();
         // max(child0.width, child1.width) for both children
-        assertEquals(200 + 200, size.width);
+        assertEquals(40 + 40, size.width);
         // max(child0.height, child1.height)
-        assertEquals(40, size.height);
+        assertEquals(20, size.height);
     }
 
     @Test
@@ -164,9 +162,7 @@ public class ContainerRenderPartTest
         MockRenderAdapter adapter = new MockRenderAdapter(ctx);
 
         MockRenderPart child0 = new MockRenderPart();
-        child0.sizeToUse = new Size(200, 40);
         MockRenderPart child1 = new MockRenderPart();
-        child1.sizeToUse = new Size(20, 20);
 
         ContainerRenderPart obj = new ContainerRenderPart(Orientation.HORIZONTAL, Arrays.asList(child0, child1));
         obj.layout(ctx);
@@ -176,9 +172,9 @@ public class ContainerRenderPartTest
         assertTrue(child0.renderCalled);
         assertTrue(child1.renderCalled);
 
-        assertEquals(child0.renderX + 200, child1.renderX);
+        assertEquals(child0.renderX + 40, child1.renderX);
         assertEquals(child1.renderY, child0.renderY);
-        assertEquals(200, child0.renderW);
-        assertEquals(200, child1.renderW);
+        assertEquals(40, child0.renderW);
+        assertEquals(40, child1.renderW);
     }
 }

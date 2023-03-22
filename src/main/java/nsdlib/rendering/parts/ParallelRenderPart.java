@@ -96,6 +96,7 @@ public class ParallelRenderPart extends RenderPart implements IContainerHolderRe
         positionX = x;
         positionY = y;
         width = w;
+        this.size = new Size(w, size.height);
 
         adapter.fillRect(x, y, w, decoHeight, getBackground());
 

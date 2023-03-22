@@ -88,10 +88,11 @@ public class RenderAdapterTest
     @Test
     public void drawStringCenteredUsesCorrectCoordinates()
     {
-        RenderContext ctx = new RenderContext(8, 10, (s) -> s.length() * 5, (s) -> 8);
+        RenderContext ctx = new RenderContext(20, 10, (s) -> (s.length() * 5) - (s.length() / 2), (s) -> 8);
         RenderAdapterMock obj = new RenderAdapterMock(ctx);
 
-        obj.drawStringCentered("Hello World!", 40, 60);
+        String s = "Hello World!";
+        obj.drawStringCentered(s, 40, 60);
 
         assertTrue(obj.drawStringAtCalled);
         assertEquals("Hello World!", obj.drawStringAtS);

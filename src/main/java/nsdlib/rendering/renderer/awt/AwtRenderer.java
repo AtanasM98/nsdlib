@@ -21,7 +21,7 @@ public class AwtRenderer extends NSDRenderer<BufferedImage>
     static final Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
     private static final FontMetrics fontMetrics = new Canvas().getFontMetrics(font);
 
-    private static final RenderContext ctx = new RenderContext(10, 10,
+    private static final RenderContext ctx = new RenderContext(20, 10,
             fontMetrics::stringWidth, s -> fontMetrics.getAscent());
 
     @Override

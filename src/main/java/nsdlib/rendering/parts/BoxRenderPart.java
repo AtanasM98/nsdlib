@@ -67,10 +67,11 @@ public class BoxRenderPart extends RenderPart
         positionX = x;
         positionY = y;
         width = w;
+        setSize(new Size(w, size.height));
 
-        adapter.fillRect(x, y, w, size.height, getBackground());
+        adapter.fillRect(x, y, w, this.size.height, getBackground());
 
-        adapter.drawRect(x, y, w, size.height);
+        adapter.drawRect(x, y, w, this.size.height);
         adapter.drawStringLeft(label, x, y);
     }
 }

@@ -126,6 +126,7 @@ public class BraceRenderPart extends RenderPart implements IContainerHolderRende
         positionY = y;
         positionX = x;
         width = w;
+        this.size = new Size(w, size.height);
 
         if (hasTop) {
             y += drawTop(adapter, x, y, w);

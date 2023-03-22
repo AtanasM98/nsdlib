@@ -29,7 +29,7 @@ public class NSDContainer<T extends NSDElement> extends NSDElement implements It
 
     /**
      * @param label The element's label.
-     * @nodeId node id of expression that represents this object
+     * @nodeId node id of expression that represents sthis object
      */
     public NSDContainer(String nodeId, String label)
     {
@@ -167,7 +167,7 @@ public class NSDContainer<T extends NSDElement> extends NSDElement implements It
     public RenderPart toRenderPart()
     {
         if(renderPart == null) {
-            renderPart = new ContainerRenderPart(Orientation.VERTICAL, getChildRenderParts());
+            renderPart = new ContainerRenderPart(this, Orientation.VERTICAL, getChildRenderParts());
         }
         return renderPart;
     }
@@ -176,9 +176,8 @@ public class NSDContainer<T extends NSDElement> extends NSDElement implements It
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
         NSDContainer<?> that = (NSDContainer<?>) o;
-        return children.equals(that.children);
+        return children.equals(that.children) && this.getLabel().equals(that.getLabel());
     }
 
     @Override

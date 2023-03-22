@@ -55,7 +55,7 @@ public class RenderContext
      */
     public int stringWidth(String s)
     {
-        return s == null ? 0 : stringWidth.applyAsInt(s);
+        return s == null ? 0 : stringWidth.applyAsInt(s) + (s.length() / 2);
     }
 
     /**

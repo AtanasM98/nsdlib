@@ -60,7 +60,7 @@ public class BraceRenderPartTest
 
         Size size = obj.getSize();
         // pad + "bottom" + pad
-        assertEquals(8 + (6 * 5) + 8, size.width);
+        assertEquals(8 + (6 * 5) + (6 / 2) + 8, size.width);
         // "top" + minHeight + "bottom"
         assertEquals((10 + 8 + 10) + 20 + (10 + 8 + 10), size.height);
     }
@@ -76,7 +76,7 @@ public class BraceRenderPartTest
 
         Size size = obj.getSize();
         // pad + "bottom" + pad
-        assertEquals(8 + (6 * 5) + 8, size.width);
+        assertEquals(8 + ((6 * 5) + 6 / 2) + 8, size.width);
         // minHeight + "bottom"
         assertEquals(20 + (10 + 8 + 10), size.height);
     }
@@ -92,7 +92,7 @@ public class BraceRenderPartTest
 
         Size size = obj.getSize();
         // pad + "top" + pad
-        assertEquals(8 + (3 * 5) + 8, size.width);
+        assertEquals(8 + ((3 * 5) + 3 / 2) + 8, size.width);
         // "top" + minHeight
         assertEquals((10 + 8 + 10) + 20, size.height);
     }

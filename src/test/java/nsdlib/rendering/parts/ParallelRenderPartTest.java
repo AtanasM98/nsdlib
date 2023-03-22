@@ -60,7 +60,7 @@ public class ParallelRenderPartTest
         // minimumWidth = 6*padH
         assertEquals(60, size.width);
         // 2*pad + (no content) + 2*pad
-        assertEquals(20 + 0 + 20, size.height);
+        assertEquals(20 + 20, size.height);
     }
 
     @Test
@@ -78,7 +78,7 @@ public class ParallelRenderPartTest
 
         Size size = obj.getSize();
         // max(child0.width, child1.width) for both children
-        assertEquals(200 + 200, size.width);
+        assertEquals(110 + 110, size.width);
         // 2*pad + child0.width + 2*pad
         assertEquals(20 + 40 + 20, size.height);
     }
@@ -105,9 +105,7 @@ public class ParallelRenderPartTest
         MockRenderAdapter adapter = new MockRenderAdapter(ctx);
 
         MockRenderPart child0 = new MockRenderPart();
-        child0.sizeToUse = new Size(200, 40);
         MockRenderPart child1 = new MockRenderPart();
-        child1.sizeToUse = new Size(20, 20);
 
         ParallelRenderPart obj = new ParallelRenderPart(null, Arrays.asList(child0, child1));
         obj.layout(ctx);
@@ -117,9 +115,9 @@ public class ParallelRenderPartTest
         assertTrue(child0.renderCalled);
         assertTrue(child1.renderCalled);
 
-        assertEquals(child0.renderX + 200, child1.renderX);
+        assertEquals(child0.renderX + 40, child1.renderX);
         assertEquals(child1.renderY, child0.renderY);
-        assertEquals(200, child0.renderW);
-        assertEquals(200, child1.renderW);
+        assertEquals(40, child0.renderW);
+        assertEquals(40, child1.renderW);
     }
 }
