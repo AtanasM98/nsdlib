@@ -78,12 +78,15 @@ public class AlternativesRenderPart extends RenderPart implements IContainerHold
     }
 
     public void setBackgroundCase(RenderColor color, int index) {
-        try {
-            this.caseColors.set(index, color);
-        }catch (IndexOutOfBoundsException e) {
-            if(index == this.caseColors.size()) {
-                this.caseColors.add(color);
-            }
+        if(index == this.caseColors.size()) {
+            this.caseColors.add(color);
+        }
+        this.caseColors.set(index, color);
+    }
+
+    public void setBackgroundCases(RenderColor color) {
+        for (int i = 0; i < this.caseColors.size(); i++) {
+            this.caseColors.set(i, color);
         }
     }
 
@@ -139,7 +142,7 @@ public class AlternativesRenderPart extends RenderPart implements IContainerHold
         width = w;
         this.size = new Size(w, size.height);
 
-        adapter.fillRect(x, y, w, headingHeight, getBackground());
+        adapter.fillRect(x, y, w, headingHeight, RenderColor.TRANSPARENT);
         y += drawHeading(adapter, x, y, w);
         content.render(adapter, x, y, w);
     }
@@ -200,7 +203,7 @@ public class AlternativesRenderPart extends RenderPart implements IContainerHold
 
     private void paintCaseColors(RenderAdapter<?> a, int x, int[] caseWidths, int originalY) {
         if(!this.caseColors.isEmpty()) {
-            for(int i = 0, n = caseColors.size(); i < n; ++i) {
+            for(int i = 0; i < caseColors.size(); ++i) {
                 a.fillRect(x, originalY, caseWidths[i], headingHeight,
                         this.caseColors.get(i));
                 x += caseWidths[i];

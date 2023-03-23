@@ -40,10 +40,10 @@ public class ExitRenderPart extends RenderPart
         int height = size.height;
         setSize(new Size(w, height));
 
+        adapter.fillRect(x, y, w, height, getBackground());
         adapter.drawRect(x, y, w, height);
         adapter.drawLine(x, y + height / 2, x + height, y);
         adapter.drawLine(x, y + height / 2, x + height, y + height);
-        adapter.fillRect(x, y, w, height, getBackground());
 
         adapter.drawStringLeft(label, x + height, y);
     }

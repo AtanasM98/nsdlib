@@ -16,6 +16,7 @@ public class RenderColor
 
     /** A fully transparent black (0, 0, 0, 0). */
     public static final RenderColor TRANSPARENT = new RenderColor(0, 0, 0, 0);
+    public static final RenderColor PATH = new RenderColor(102, 178, 255);
 
     private final int r, g, b, a;
 

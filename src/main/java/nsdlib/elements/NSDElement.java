@@ -69,6 +69,6 @@ public abstract class NSDElement
 
     @Override
     public int hashCode() {
-        return Objects.hash(renderPart, label);
+        return Objects.hash(label);
     }
 }
