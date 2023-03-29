@@ -1,16 +1,9 @@
-import nsdlib.elements.NSDContainer;
-import nsdlib.elements.NSDInstruction;
-import nsdlib.elements.NSDRoot;
+import nsdlib.elements.*;
 import nsdlib.elements.alternatives.NSDCase;
 import nsdlib.elements.alternatives.NSDDecision;
-import nsdlib.elements.loops.NSDForever;
-import nsdlib.elements.loops.NSDTestFirstLoop;
-import nsdlib.elements.loops.NSDTestLastLoop;
+import nsdlib.pathAnalyzer.NSDPath;
+import nsdlib.pathAnalyzer.NSDPathAnalyzer;
 import nsdlib.rendering.RenderColor;
-import nsdlib.rendering.Size;
-import nsdlib.rendering.parts.AlternativesRenderPart;
-import nsdlib.rendering.parts.ContainerRenderPart;
-import nsdlib.rendering.parts.RenderPart;
 import nsdlib.rendering.parts.RootRenderPart;
 import nsdlib.rendering.renderer.awt.AwtRenderer;
 
@@ -18,61 +11,79 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.Arrays;
+
+import static dreamex.mainMEMX.buildMainMEMXMinimumExecutionQuantity;
 
 public class main {
     public static void main(String[] args) {
-        NSDRoot diagram = new NSDRoot("","InsertOrder");
+        NSDRoot diagramSimple = new NSDRoot("","Minimum Execution Quantity");
 
-        NSDCase nsdCase = new NSDCase("","alt");
-        NSDContainer caseCont = new NSDContainer<>("");
-        NSDContainer caseCont1 = new NSDContainer("count < 10");
-        caseCont1.addChild(new NSDInstruction("", "count + 1"));
-        NSDContainer caseCont2 = new NSDContainer("count > 10");
-        caseCont2.addChild(new NSDInstruction("", "count + 2"));
-        NSDContainer caseCont3 = new NSDContainer("count == 10");
-        caseCont3.addChild(new NSDInstruction("", "count + 3"));
+        NSDCase testCase = new NSDCase("", "Testing case");
+        NSDContainer<NSDElement> test1 = new NSDContainer<>("Case 1");
+        NSDContainer<NSDElement> test2 = new NSDContainer<>("Case 2");
+        NSDContainer<NSDElement> test3 = new NSDContainer<>("Case 3");
+        NSDContainer<NSDElement> test4 = new NSDContainer<>("Case 4");
+        testCase.addChild(test1);
+        testCase.addChild(test2);
+        testCase.addChild(test3);
+        testCase.addChild(test4);
+        test1.addChild(new NSDInstruction("", "Test instruction 1"));
+        test2.addChild(new NSDInstruction("", "Test instruction 2"));
+        test3.addChild(new NSDInstruction("", "Test instruction 3"));
+        test4.addChild(new NSDInstruction("", "Test instruction 4"));
 
-        nsdCase.addChild(caseCont1);
-        nsdCase.addChild(caseCont2);
-        nsdCase.addChild(caseCont3);
-        diagram.addChild(nsdCase);
+        NSDDecision testDecision = new NSDDecision("", "Check");
+        testDecision.getThen().addChild(new NSDInstruction("", "Check 1"));
+        testDecision.getElse().addChild(new NSDInstruction("", "Check 2"));
 
-        NSDDecision nsdDec = new NSDDecision("", "count < 100");
-        nsdDec.getThen().addChild(new NSDInstruction("", "count + 4"));
-        nsdDec.getElse().addChild(new NSDInstruction("", "count + 5"));
-        diagram.addChild(nsdDec);
+        test1.addChild(testDecision);
 
+        NSDCase testCase2 = new NSDCase("", "Testing case 2");
+        NSDContainer<NSDElement> test5 = new NSDContainer<>("Case 5");
+        NSDContainer<NSDElement> test6 = new NSDContainer<>("Case 6");
+        NSDContainer<NSDElement> test7 = new NSDContainer<>("Case 7");
+
+        testCase2.addChild(test5);
+        testCase2.addChild(test6);
+        testCase2.addChild(test7);
+        test2.addChild(testCase2);
+
+        test5.addChild(new NSDInstruction("","Test instruction 5"));
+        test6.addChild(new NSDInstruction("","Test instruction 6"));
+        test7.addChild(new NSDExit("Return"));
+
+        diagramSimple.addChild(testCase);
+        diagramSimple.addChild(new NSDExit("Return"));
+
+
+        NSDRoot diagram = buildMainMEMXMinimumExecutionQuantity();
+        diagramSimple.toRenderPart().setBackground(RenderColor.WHITE);
+
+        NSDPathAnalyzer pathAnalyzer = new NSDPathAnalyzer(diagramSimple);
+        pathAnalyzer.analyzePaths();
+
+        saveToImage(buildImage(diagramSimple), "image.png");
+        int pathCounter = 0;
+        for (NSDPath path: pathAnalyzer.getPaths()) {
+            path.showPath(RenderColor.PATH);
+
+            saveToImage(buildImage(diagramSimple), "paths/image" + pathCounter++ + ".png");
+            path.hidePath();
+        }
+    }
+
+    public static BufferedImage buildImage(NSDRoot diagram) {
         AwtRenderer renderer = new AwtRenderer();
-
         // 1. convert (`diagram` is an instance of `NSDRoot`)
         RootRenderPart part = (RootRenderPart) diagram.toRenderPart();
         // 2. layout
         part.layout(renderer.createContext());
-        // optional: get the resulting size
-        // Size s = part.getSize();
-
-        AlternativesRenderPart caseRPart = (AlternativesRenderPart) part.getContent().getChildren().get(0);
-        caseRPart.setBackground(new RenderColor(11, 25, 123));
-        caseRPart.setBackgroundCase(RenderColor.GREEN, 0);
-        caseRPart.setBackgroundCase(RenderColor.RED, 1);
-        caseRPart.setBackgroundCase(new RenderColor(123, 11, 25), 2);
-        caseRPart.setBackgroundChild(RenderColor.RED, 0);
-        caseRPart.setBackgroundChild(RenderColor.GREEN, 1);
-        caseRPart.setBackgroundChild(new RenderColor(25, 123, 11), 2);
-
-        AlternativesRenderPart caseRPart1 = (AlternativesRenderPart) part.getContent().getChildren().get(1);
-        caseRPart1.setBackground(new RenderColor(11, 25, 123));
-        caseRPart1.setBackgroundCase(RenderColor.GREEN, 0);
-        caseRPart1.setBackgroundCase(RenderColor.RED, 1);
-        caseRPart1.setBackgroundChild(RenderColor.RED, 0);
-        caseRPart1.setBackgroundChild(RenderColor.GREEN, 1);
-
         // 3. render
-        BufferedImage img = renderer.render(part,1);
+        return renderer.render(part,1);
+    }
 
-        File outputFile = new File("image.png");
+    public static void saveToImage(BufferedImage img, String pathname) {
+        File outputFile = new File(pathname);
         try {
             ImageIO.write(img, "png", outputFile);
         } catch (IOException e) {

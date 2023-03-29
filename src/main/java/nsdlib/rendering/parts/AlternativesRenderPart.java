@@ -75,6 +75,7 @@ public class AlternativesRenderPart extends RenderPart implements IContainerHold
     public void setBackground(RenderColor color) {
         this.background = color;
         this.content.setBackground(RenderColor.WHITE);
+        setBackgroundCases(color);
     }
 
     public void setBackgroundCase(RenderColor color, int index) {
@@ -85,9 +86,7 @@ public class AlternativesRenderPart extends RenderPart implements IContainerHold
     }
 
     public void setBackgroundCases(RenderColor color) {
-        for (int i = 0; i < this.caseColors.size(); i++) {
-            this.caseColors.set(i, color);
-        }
+        this.caseColors.replaceAll(ignored -> color);
     }
 
     public RenderColor getBackgroundCase(int index) {

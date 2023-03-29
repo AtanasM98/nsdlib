@@ -3,6 +3,7 @@ package nsdlib.rendering.parts;
 import java.util.Collection;
 import java.util.Objects;
 
+import nsdlib.elements.NSDContainer;
 import nsdlib.elements.NSDElement;
 import nsdlib.rendering.RenderColor;
 import nsdlib.rendering.Size;

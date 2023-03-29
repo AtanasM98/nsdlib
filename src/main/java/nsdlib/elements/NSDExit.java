@@ -11,6 +11,10 @@ public class NSDExit extends NSDElement
         super("", label);
     }
 
+    public NSDExit(String nodeId, String label) {
+        super(nodeId, label);
+    }
+
     @Override
     public RenderPart toRenderPart() {
         if(renderPart == null) {
