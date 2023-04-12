@@ -3,16 +3,18 @@ package nsdlib.pathAnalyzer;
 import nsdlib.elements.*;
 import nsdlib.elements.alternatives.NSDCase;
 import nsdlib.elements.alternatives.NSDDecision;
+import nsdlib.elements.loops.NSDTestFirstLoop;
+
+import java.lang.reflect.Array;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class NSDPathAnalyzer
 {
     private ArrayList<NSDPath> paths;
-    private int currentPathIndex;
-    private NSDRoot diagram;
+    private final NSDRoot diagram;
 
-    public NSDPathAnalyzer(NSDRoot diagram)
-    {
+    public NSDPathAnalyzer(NSDRoot diagram) {
         this.paths = new ArrayList<>();
         this.diagram = diagram;
     }
@@ -22,92 +24,108 @@ public class NSDPathAnalyzer
         return Collections.unmodifiableList(paths);
     }
 
-    Map<NSDElement, Integer> visitedAlternativeIndexes;
-    int potentialPaths;
-
-
-    public void analyzePaths()
-    {
-        visitedAlternativeIndexes = new HashMap<NSDElement, Integer>();
+    public void analyzePaths() {
         paths.clear();
-        currentPathIndex = 0;
-        potentialPaths = 1;
-        paths.add(new NSDPath());
-        while (currentPathIndex < potentialPaths) {
-            analyzePaths(this.diagram);
-        }
+        this.paths = analyzePath(diagram);
     }
 
-    private int currentPathDecisionPosition = 0;
-
-    /*
-    * returns a boolean value that specifies whether the analyzer should continue building the path
-    * or stop because an exit instruction has been found nested in its elements
-    */
-    private boolean analyzePaths(NSDContainer<NSDElement> diagram)
-    {
-        for (int i = 0; i < diagram.countChildren(); i++) {
-            NSDElement child = diagram.getChild(i);
-            NSDPath nsdPath = paths.get(currentPathIndex);
-            nsdPath.addToPath(child);
+    private ArrayList<NSDPath> analyzePath(NSDContainer<NSDElement> container) {
+        ArrayList<NSDPath> results = new ArrayList<NSDPath>();
+        results.add(new NSDPath());
+        for (int i = 0; i < container.countChildren(); i++) {
+            NSDElement child = container.getChild(i);
+            for (NSDPath path: results) {
+                if(!path.finished())
+                    path.addToPath(child);
+            }
             if(child instanceof NSDDecision) {
-                if(visitedAlternativeIndexes.get(child) == null) {
-                    nsdPath.setDecisionIndex(currentPathDecisionPosition, 0);
-                    currentPathDecisionPosition++;
-                    if(!analyzePaths(((NSDDecision) child).getThen()))
-                        return false;
-                } else {
-                    nsdPath.setDecisionIndex(currentPathDecisionPosition, 1);
-                    currentPathDecisionPosition++;
-                    if(!analyzePaths(((NSDDecision) child).getElse()))
-                        return false;
-                }
+                analyzeInnerDecision(results, child);
             }
             else if (child instanceof NSDCase) {
-                int caseIndex = visitedAlternativeIndexes.get(child) == null ? 0 :
-                        visitedAlternativeIndexes.get(child) + 1;
-                if(caseIndex < ((NSDCase) child).countChildren()) {
-                    nsdPath.setDecisionIndex(currentPathDecisionPosition, caseIndex);
-                    currentPathDecisionPosition++;
-                    if(!analyzePaths(((NSDCase) child).getChildren().get(caseIndex)))
-                        return false;
-                }
+                analyzeInnerCase(results, child);
+            }
+            else if (child instanceof NSDTestFirstLoop) {
+                analyzeInnerTestFirstLoop(results, (NSDTestFirstLoop) child);
             }
             else if (child instanceof NSDContainer) {
-                if(!analyzePaths((NSDContainer<NSDElement>) child))
-                    break;
-            } else if(child instanceof NSDExit) {
-                visitToLastDecision(nsdPath);
-                currentPathDecisionPosition = 0;
-                currentPathIndex++;
-                if(currentPathIndex < potentialPaths) {
-                    paths.add(new NSDPath());
-                }
-                return false;
+                analyzeContainer(results, (NSDContainer<NSDElement>) child);
             }
         }
-        return true;
+        return results;
     }
 
-    private void visitToLastDecision(NSDPath path) {
-        for (int i = path.getPath().size() - 1; i >= 0 ; i--) {
-            NSDElement element = path.getPath().get(i);
-            if(visitedAlternativeIndexes.putIfAbsent(element, 0) != null) {
-                if(element instanceof NSDDecision || element instanceof NSDCase) {
-                    int index = visitedAlternativeIndexes.get(element) + 1;
-                    visitedAlternativeIndexes.put(element, index);
-                    if(element instanceof NSDCase) {
-                        if(index < ((NSDContainer) element).countChildren() - 1)
-                            break;
+    private void analyzeContainer(ArrayList<NSDPath> results, NSDContainer<NSDElement> child) {
+        for (NSDPath result : results) {
+            if(!result.finished()) {
+                ArrayList<NSDPath> foundPaths = analyzePath(child);
+                for (NSDPath foundPath : foundPaths) {
+                    result.appendPath(foundPath);
+                }
+            }
+        }
+    }
+
+    private void analyzeInnerDecision(ArrayList<NSDPath> results, NSDElement child) {
+        int resultsSize = results.size();
+        List<NSDPath> pathsToRemove = new ArrayList<>();
+        for (int i = 0; i < resultsSize; i++) {
+            if(!results.get(i).finished()) {
+                ArrayList<NSDPath> foundThenPaths = analyzePath(((NSDDecision) child).getThen());
+                for (NSDPath foundPath: foundThenPaths) {
+                    NSDPath decPath = new NSDPath(results.get(i));
+                    decPath.setDecisionIndex(child, 0);
+                    decPath.appendPath(foundPath);
+                    results.add(decPath);
+                }
+                ArrayList<NSDPath> foundElsePaths = analyzePath(((NSDDecision) child).getElse());
+                for (NSDPath foundPath: foundElsePaths) {
+                    NSDPath decPath = new NSDPath(results.get(i));
+                    decPath.setDecisionIndex(child, 1);
+                    decPath.appendPath(foundPath);
+                    results.add(decPath);
+                }
+                pathsToRemove.add(results.get(i));
+            }
+        }
+        for (NSDPath path : pathsToRemove) {
+            results.remove(path);
+        }
+    }
+
+    private void analyzeInnerCase(ArrayList<NSDPath> results, NSDElement child) {
+        int casesCount = ((NSDCase) child).countChildren();
+        int resultsSize = results.size();
+        List<NSDPath> pathsToRemove = new ArrayList<>();
+        for (int i = 0; i < resultsSize; i++) {
+            if(!results.get(i).finished()) {
+                for (int j = 0; j < casesCount; j++) {
+                    ArrayList<NSDPath> foundCasePaths = analyzePath(((NSDCase) child).getChild(j));
+                    for (NSDPath foundPath: foundCasePaths) {
+                        NSDPath casePath = new NSDPath(results.get(i));
+                        casePath.setDecisionIndex(child, j);
+                        casePath.appendPath(foundPath);
+                        results.add(casePath);
                     }
                 }
-            } else if (element instanceof NSDDecision || element instanceof NSDCase) {
-                int childrenSize = 2;
-                if(element instanceof NSDCase) {
-                    childrenSize = ((NSDContainer) element).countChildren();
+                pathsToRemove.add(results.get(i));
+            }
+        }
+
+        for (NSDPath path : pathsToRemove) {
+            results.remove(path);
+        }
+    }
+
+    private void analyzeInnerTestFirstLoop(ArrayList<NSDPath> results, NSDTestFirstLoop child) {
+        int resultsSize = results.size();
+        for (int j = 0; j < resultsSize; j++) {
+            if(!results.get(j).finished()) {
+                ArrayList<NSDPath> foundInnerPaths = analyzePath(child);
+                for (NSDPath foundPath: foundInnerPaths) {
+                    NSDPath decPath = new NSDPath(results.get(j));
+                    decPath.appendPath(foundPath);
+                    results.add(decPath);
                 }
-                potentialPaths += childrenSize - 1;
-                break;
             }
         }
     }

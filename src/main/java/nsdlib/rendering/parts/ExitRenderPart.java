@@ -20,6 +20,7 @@ public class ExitRenderPart extends RenderPart
     @Override
     public void layout(RenderContext ctx) {
         size = ctx.box(label);
+        size = new Size(size.width, size.height);
     }
 
     @Override
@@ -45,6 +46,6 @@ public class ExitRenderPart extends RenderPart
         adapter.drawLine(x, y + height / 2, x + height, y);
         adapter.drawLine(x, y + height / 2, x + height, y + height);
 
-        adapter.drawStringLeft(label, x + height, y);
+        adapter.drawStringLeft(label, (int) (x + (height / 1.5f)), y);
     }
 }

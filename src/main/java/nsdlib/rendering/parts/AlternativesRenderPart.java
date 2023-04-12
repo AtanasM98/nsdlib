@@ -24,7 +24,7 @@ public class AlternativesRenderPart extends RenderPart implements IContainerHold
     private int[] caseWidths;
     private Size size;
     private int headingHeight;
-    private final List<RenderColor> caseColors;
+    private HashMap<Integer, RenderColor> caseColors;
 
     /**
      * Constructs a new alternatives part.
@@ -41,17 +41,16 @@ public class AlternativesRenderPart extends RenderPart implements IContainerHold
 
         this.label = label;
         this.pathLabels = Collections.unmodifiableList(new ArrayList<>(pathLabels));
-        this.caseColors = new ArrayList<RenderColor>(pathLabels.size());
+        this.caseColors = new HashMap<>();
+        for (int i = 0; i < pathContents.size(); i++) {
+            this.caseColors.put(i, RenderColor.WHITE);
+        }
 
         this.content = new ContainerRenderPart(Orientation.HORIZONTAL, pathContents);
     }
 
     public int getHeadingHeight() {
-        if(this.content.getChildren().size() > 2){
-            return headingHeight / 2;
-        } else {
-            return headingHeight;
-        }
+        return headingHeight;
     }
 
     public int[] getCaseWidths() { return caseWidths; }
@@ -74,19 +73,14 @@ public class AlternativesRenderPart extends RenderPart implements IContainerHold
     @Override
     public void setBackground(RenderColor color) {
         this.background = color;
-        this.content.setBackground(RenderColor.WHITE);
-        setBackgroundCases(color);
     }
 
     public void setBackgroundCase(RenderColor color, int index) {
-        if(index == this.caseColors.size()) {
-            this.caseColors.add(color);
-        }
-        this.caseColors.set(index, color);
+        this.caseColors.put(index, color);
     }
 
     public void setBackgroundCases(RenderColor color) {
-        this.caseColors.replaceAll(ignored -> color);
+        this.caseColors.replaceAll((key, oldColor) -> color);
     }
 
     public RenderColor getBackgroundCase(int index) {
