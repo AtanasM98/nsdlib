@@ -102,10 +102,15 @@ public abstract class RenderAdapter<T>
             return;
         }
 
-        x += ctx.getHorizontalPadding();
-        y += ctx.getVerticalPadding() + ctx.stringHeight(s);
+        String[] stringSplit = s.split("/n");
 
-        drawStringAt(s, x, y);
+        x += ctx.getHorizontalPadding();
+        y += ctx.getVerticalPadding() + (ctx.stringHeight(s) / stringSplit.length);
+
+        for (String line: stringSplit) {
+            drawStringAt(line, x, y);
+            y += ctx.stringHeight(line) / 2;
+        }
     }
 
     /**
@@ -124,10 +129,15 @@ public abstract class RenderAdapter<T>
             return;
         }
 
-        x -= ctx.stringWidth(s) / 2;
+        String[] stringSplit = s.split("/n");
+
+        x -= ctx.stringWidth(stringSplit[0]) / 2;
         y += ctx.getVerticalPadding() + ctx.stringHeight(s);
 
-        drawStringAt(s, x, y);
+        for (String line: stringSplit) {
+            drawStringAt(line, x, y);
+            y += ctx.stringHeight(s) / 2;
+        }
     }
 
     /**

@@ -75,8 +75,8 @@ public class NSDPathTest {
         testPath.addToPath(testDecision);
         testPath.addToPath(checkI1);
         testPath.addToPath(return2);
-        testPath.setDecisionIndex(0, 0);
-        testPath.setDecisionIndex(1, 0);
+        testPath.setDecisionIndex(testCase, 0);
+        testPath.setDecisionIndex(testDecision, 0);
 
         testPath.showPath(RenderColor.GREEN);
 

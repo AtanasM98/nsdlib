@@ -55,7 +55,19 @@ public class RenderContext
      */
     public int stringWidth(String s)
     {
-        return s == null ? 0 : stringWidth.applyAsInt(s) + (s.length() / 2);
+        if(s == null) {
+            return 0;
+        } else {
+            int width = 0;
+            String[] stringSplit = s.split("/n");
+
+            for (String line: stringSplit) {
+                int lineWidth = stringWidth.applyAsInt(line);
+                width = Math.max(lineWidth + (line.length() / 2), width);
+            }
+
+            return width;
+        }
     }
 
     /**
@@ -67,7 +79,18 @@ public class RenderContext
      */
     public int stringHeight(String s)
     {
-        return s == null ? 0 : stringHeight.applyAsInt(s);
+        if(s == null) {
+            return 0;
+        } else {
+            int height = 0;
+            String[] stringSplit = s.split("/n");
+
+            for (String line: stringSplit) {
+                height += stringHeight.applyAsInt(line);
+            }
+
+            return height;
+        }
     }
 
     /**
